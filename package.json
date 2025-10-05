@@ -1,0 +1,13 @@
+{
+  "name": "bigin-webhook-server",
+  "version": "1.0.0",
+  "description": "Webhook → Zoho Bigin integration (Node.js + Express)",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2"
+  }
+}
