@@ -15,7 +15,7 @@ const credentials = {
   serverClient: {
     clientId: '1000.YGDJ730H28KEGG5PU7O9NFKY5BQWTN',
     clientSecret: '399a8ff39ae8ca478c91b8d71466aae422d60e1e72',
-    refreshToken: 'NEEDS_AUTHORIZATION_CODE_EXCHANGE' // Update when available
+    refreshToken: '1000.dd84c2eb3b72ec3dfd9ef4f1ca28565a.12c29bbca3b8ab2cca968c88b5efd42a'
   }
 };
 
