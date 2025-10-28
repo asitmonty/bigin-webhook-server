@@ -1,0 +1,179 @@
+{
+  "fieldMappings": {
+    "name": ["name", "Name", "full_name", "Full_Name", "customer_name", "Customer_Name", "contact_name", "Contact_Name", "user_name", "User_Name", "userName", "customerName"],
+    "first_name": ["first_name", "First_Name", "firstName", "FirstName"],
+    "last_name": ["last_name", "Last_Name", "lastName", "LastName"],
+    "email": ["email", "Email", "email_address", "Email_Address", "contact_email", "Contact_Email", "customerEmail"],
+    "phone": ["phone", "Phone", "mobile", "Mobile", "phone_number", "Phone_Number", "contact_phone", "Contact_Phone"],
+    "message": ["message", "Message", "description", "Description", "comments", "Comments", "notes", "Notes", "inquiry", "Inquiry"],
+    "company": ["company", "Company", "organization", "Organization", "business_name", "Business_Name", "firm", "Firm", "Company_Name", "customerCompany"],
+    "source": ["source", "Source", "lead_source", "Lead_Source", "utm_source", "utm_medium", "referrer", "Referrer", "leadSource"],
+    "priority": ["priority", "Priority", "urgency", "Urgency", "importance", "Importance"],
+    "website": ["website", "Website", "url", "URL", "company_website", "Company_Website"],
+    "country": ["country", "Country", "Country_Name", "country_name"],
+    "category": ["category", "Category"],
+    "sub_category": ["sub_category", "Sub_Category", "subCategory"],
+    "package_type": ["package_type", "Package_Type", "packageType"],
+    "license_type": ["license_type", "License_Type", "licenseType"],
+    "user_bucket": ["user_bucket", "User_Bucket", "userBucket"],
+    "deal_name": ["deal_name", "Deal_Name", "dealName"],
+    "closed_deal_name": ["closed_deal_name", "Closed_Deal_Name", "closedDealName"],
+    "product_name": ["product_name", "Product_Name", "productName"],
+    "offer_title": ["offer_title", "Offer_Title", "offerTitle"],
+    "user_title": ["user_title", "User_Title", "userTitle"],
+    "user_details_key_type": ["user_details_key_type", "User_Details_Key_Type", "userDetailsKeyType"],
+    "event_name": ["event_name", "Event_Name", "eventName"],
+    "domain": ["domain", "Domain"],
+    "deal_date": ["deal_date", "Deal_Date", "dealDate"],
+    "deal_amount": ["deal_amount", "Deal_Amount", "dealAmount"],
+    "users": ["users", "Users"],
+    "license_purchased_on": ["license_purchased_on", "License_Purchased_On", "licensePurchasedOn"],
+    "license_end_date": ["license_end_date", "License_End_Date", "licenseEndDate"],
+    "visual_guid": ["visual_guid", "Visual_GUID", "visualGUID"],
+    "visual_key": ["visual_key", "Visual_Key", "visualKey"],
+    "stripe_fee": ["stripe_fee", "Stripe_Fee", "stripeFee"],
+    "stripe_fee_currency": ["stripe_fee_currency", "Stripe_Fee_Currency", "stripeFeeCurrency"]
+  },
+  "validationRules": {
+    "email": {
+      "required": false,
+      "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+      "message": "Invalid email format"
+    },
+    "phone": {
+      "required": false,
+      "pattern": "^[\\+]?[1-9][\\d]{0,15}$",
+      "message": "Invalid phone number format"
+    },
+    "name": {
+      "required": true,
+      "minLength": 2,
+      "message": "Name is required and must be at least 2 characters"
+    },
+    "website": {
+      "required": false,
+      "pattern": "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$",
+      "message": "Invalid website URL format"
+    }
+  },
+  "transformationRules": {
+    "phone": {
+      "removeSpaces": true,
+      "removeSpecialChars": true,
+      "addCountryCode": "+1"
+    },
+    "email": {
+      "toLowerCase": true,
+      "trim": true
+    },
+    "name": {
+      "titleCase": true,
+      "trim": true
+    },
+    "company": {
+      "titleCase": true,
+      "trim": true
+    },
+    "website": {
+      "toLowerCase": true,
+      "trim": true,
+      "addProtocol": "https"
+    }
+  },
+  "zohoFieldMappings": {
+    "Last_Name": "name",
+    "Email": "email",
+    "Mobile": "phone",
+    "Description": "message",
+    "Company": "company",
+    "Lead_Source": "source",
+    "Priority": "priority",
+    "Website": "website"
+  },
+  "defaultValues": {
+    "Lead_Source": "Webhook",
+    "Priority": "Medium",
+    "Description": "Lead received via webhook"
+  },
+  "licenseEventRules": {
+    "trialEvents": [
+      "visualmaker.license.trial",
+      "visualmaker.license.downloadTrial", 
+      "appsource.license.downloadTrial"
+    ],
+    "activationEvents": [
+      "visualmaker.visual.enqueue",
+      "dashboard.create",
+      "user.login.success",
+      "user.login.activate",
+      "user.login.register"
+    ],
+    "purchaseEvents": [
+      "purchase.completed",
+      "subscription.created",
+      "visualmaker.license.purchase"
+    ],
+    "purchaseInitiateEvents": [
+      "purchase.initiated",
+      "visualmaker.license.purchaseInitiate"
+    ],
+    "renewalEvents": [
+      "subscription.renewed",
+      "renewal.completed",
+      "visualmaker.license.renewal"
+    ],
+    "renewalInitiateEvents": [
+      "renewal.initiated",
+      "visualmaker.license.renewalInitiate"
+    ],
+    "cancellationEvents": [
+      "subscription.cancelled",
+      "cancellation.completed"
+    ]
+  },
+  "stageMapping": {
+    "trial": {
+      "newContact": {
+        "website": "Sample - Downloaded",
+        "MP": "Sample - Downloaded"
+      },
+      "existingContact": {
+        "PBI Marketplace": "Sample - MP",
+        "PowerBI": "Sample - MP", 
+        "SPZA": "Sample - MP",
+        "Website": "Trial - License"
+      }
+    },
+    "activation": {
+      "visualmaker.visual.enqueue": "Trial - Exported",
+      "dashboard.create": "Trial - Dashboard",
+      "user.login.success": "Trial - Activated",
+      "user.login.activate": "Trial - Login",
+      "user.login.register": "Trial - Registered"
+    },
+    "purchase": {
+      "completed": "Closed Won",
+      "initiated": "Purchase Initiated"
+    },
+    "purchaseInitiate": "Purchase Initiated",
+    "renewal": "Renewal",
+    "renewalInitiate": "Renewal Initiated"
+  },
+  "sourceMapping": {
+    "website": "Sample - Website",
+    "MP": "Sample - MP",
+    "marketplace": "Sample - MP"
+  },
+  "dealNaming": {
+    "purchase": {
+      "format": "{dealName}-CW-{date}",
+      "dateFormat": "YYYYMMDD"
+    }
+  },
+  "errorHandling": {
+    "retryAttempts": 3,
+    "retryDelay": 1000,
+    "fallbackToDescription": true,
+    "logErrors": true
+  }
+}
