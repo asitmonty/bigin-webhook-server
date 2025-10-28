@@ -1,0 +1,541 @@
+2025-10-28T06:20:20  Fetching changes.
+2025-10-28T06:20:20    Starting  LocalZipHandler
+2025-10-28T06:20:20    Cleaning up temp folders from previous zip deployments and extracting pushed zip file /tmp/zipdeploy/b2c610fc-0bf5-43c1-bbc8-a7cbb77781bf.zip (0.02 MB) to /tmp/zipdeploy/extracted
+2025-10-28T06:20:23  Updating submodules.
+2025-10-28T06:20:23  Preparing deployment for commit id 'cf973c47-5'.
+2025-10-28T06:20:24  PreDeployment: context.CleanOutputPath False
+2025-10-28T06:20:24  PreDeployment: context.OutputPath /home/site/wwwroot
+2025-10-28T06:20:24  Running build. Project type: OneDeploy
+2025-10-28T06:20:24  Copying the manifest
+2025-10-28T06:20:24  Running deployment command...
+2025-10-28T06:20:24    Command: /opt/Kudu/Scripts/parallel_rsync.sh /tmp/zipdeploy/extracted /home/site/wwwroot 8 /tmp/ False False  
+2025-10-28T06:20:24    Run rsync from: /tmp/zipdeploy/extracted/ to: /home/site/wwwroot/ in 8 parallel threads
+2025-10-28T06:20:24    Delete options: clean=False, use manifest=False, directory to ignore=
+2025-10-28T06:20:25    Prev manifest = /opt/Kudu/Scripts/firstDeploymentManifest and next /home/site/deployments/cf973c47-5100-44cc-9dff-859c3930ddb3/manifest
+2025-10-28T06:20:25    Cleaning up /tmp//filelist.txt and /tmp//splits
+2025-10-28T06:20:25    Creating a list of all files at /tmp//filelist.txt
+2025-10-28T06:20:25    No directory to exclude.
+2025-10-28T06:20:25    Created /tmp//filelist.txt. Total number of files to be synced = 12.
+2025-10-28T06:20:25    Created batches from the list of files. Processing 2 files in each thread
+2025-10-28T06:20:25    Running rsync for filelist /tmp//splits/split.aa from /tmp/zipdeploy/extracted/ to /home/site/wwwroot/
+2025-10-28T06:20:25    rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\DataProcessor.js": Invalid argument (22)
+2025-10-28T06:20:25    Running rsync for filelist /tmp//splits/split.ab from /tmp/zipdeploy/extracted/ to /home/site/wwwroot/
+2025-10-28T06:20:25    rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\rules.json": Invalid argument (22)
+2025-10-28T06:20:25    rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessorV2.js": Invalid argument (22)
+2025-10-28T06:20:25    Running rsync for filelist /tmp//splits/split.ad from /tmp/zipdeploy/extracted/ to /home/site/wwwroot/
+2025-10-28T06:20:25    rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\ConfigManager.js": Invalid argument (22)
+2025-10-28T06:20:25    Running rsync for filelist /tmp//splits/split.ae from /tmp/zipdeploy/extracted/ to /home/site/wwwroot/
+2025-10-28T06:20:25    rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\SimpleDataProcessor.js": Invalid argument (22)
+2025-10-28T06:20:25    rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\ZohoCRMClient.js": Invalid argument (22)
+2025-10-28T06:20:25    Running rsync for filelist /tmp//splits/split.af from /tmp/zipdeploy/extracted/ to /home/site/wwwroot/
+2025-10-28T06:20:25    
+sync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+2025-10-28T06:20:25    Number of files: 2 (reg: 2)
+2025-10-28T06:20:25    Number of created files: 0
+2025-10-28T06:20:25    rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessor.js": Invalid argument (22)
+2025-10-28T06:20:25    Number of deleted files: 0
+2025-10-28T06:20:25    Number of regular files transferred: 0
+2025-10-28T06:20:25    rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+2025-10-28T06:20:25    Total file size: 15.44K bytes
+2025-10-28T06:20:25    rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+2025-10-28T06:20:25    Total transferred file size: 0 bytes
+2025-10-28T06:20:25    rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+2025-10-28T06:20:25    Literal data: 0 bytes
+2025-10-28T06:20:25    rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\DataProcessor.js": Invalid argument (22)
+2025-10-28T06:20:25    Matched data: 0 bytes
+2025-10-28T06:20:25    rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+2025-10-28T06:20:25    File list size: 0
+2025-10-28T06:20:25    rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\ConfigManager.js": Invalid argument (22)
+2025-10-28T06:20:25    File list generation time: 0.001 seconds
+2025-10-28T06:20:25    rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\SimpleDataProcessor.js": Invalid argument (22)
+2025-10-28T06:20:25    File list transfer time: 0.000 seconds
+2025-10-28T06:20:25    rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\rules.json": Invalid argument (22)
+2025-10-28T06:20:25    Total bytes sent: 146
+2025-10-28T06:20:25    rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessorV2.js": Invalid argument (22)
+2025-10-28T06:20:25    Total bytes received: 15
+2025-10-28T06:20:25    rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\ZohoCRMClient.js": Invalid argument (22)
+2025-10-28T06:20:25    
+2025-10-28T06:20:26    rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessor.js": Invalid argument (22)
+2025-10-28T06:20:26    sent 146 bytes  received 15 bytes  322.00 bytes/sec
+2025-10-28T06:20:26    rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+2025-10-28T06:20:26    total size is 15.44K  speedup is 95.90
+2025-10-28T06:20:26    rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+2025-10-28T06:20:26    Attempt 1: Rsync for filelist /tmp//splits/split.ae completed with exit code 23
+2025-10-28T06:20:26    rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+2025-10-28T06:20:26    
+2025-10-28T06:20:26    rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+2025-10-28T06:20:26    Number of files: 2 (reg: 2)
+2025-10-28T06:20:26    rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+2025-10-28T06:20:26    Number of created files: 0
+2025-10-28T06:20:26    Number of deleted files: 0
+2025-10-28T06:20:26    Number of regular files transferred: 0
+2025-10-28T06:20:26    Total file size: 22.09K bytes
+2025-10-28T06:20:26    Total transferred file size: 0 bytes
+2025-10-28T06:20:26    Literal data: 0 bytes
+2025-10-28T06:20:26    Matched data: 0 bytes
+2025-10-28T06:20:26    File list size: 0
+2025-10-28T06:20:26    File list generation time: 0.001 seconds
+2025-10-28T06:20:26    File list transfer time: 0.000 seconds
+2025-10-28T06:20:26    Total bytes sent: 161
+2025-10-28T06:20:26    Total bytes received: 12
+2025-10-28T06:20:26    
+2025-10-28T06:20:26    sent 161 bytes  received 12 bytes  346.00 bytes/sec
+2025-10-28T06:20:26    total size is 22.09K  speedup is 127.67
+2025-10-28T06:20:26    Attempt 1: Rsync for filelist /tmp//splits/split.ab completed with exit code 23
+2025-10-28T06:20:26    
+2025-10-28T06:20:26    Number of files: 2 (reg: 2)
+2025-10-28T06:20:26    Number of created files: 0
+2025-10-28T06:20:26    Number of deleted files: 0
+2025-10-28T06:20:26    Number of regular files transferred: 0
+2025-10-28T06:20:26    Total file size: 13.63K bytes
+2025-10-28T06:20:26    Total transferred file size: 0 bytes
+2025-10-28T06:20:26    Literal data: 0 bytes
+2025-10-28T06:20:26    Matched data: 0 bytes
+2025-10-28T06:20:26    File list size: 0
+2025-10-28T06:20:26    File list generation time: 0.001 seconds
+2025-10-28T06:20:26    File list transfer time: 0.000 seconds
+2025-10-28T06:20:26    Total bytes sent: 163
+2025-10-28T06:20:26    Total bytes received: 12
+2025-10-28T06:20:26    
+2025-10-28T06:20:26    sent 163 bytes  received 12 bytes  350.00 bytes/sec
+2025-10-28T06:20:26    total size is 13.63K  speedup is 77.89
+2025-10-28T06:20:26    Attempt 1: Rsync for filelist /tmp//splits/split.aa completed with exit code 23
+2025-10-28T06:20:26    
+2025-10-28T06:20:26    Number of files: 2 (reg: 2)
+2025-10-28T06:20:26    Number of created files: 0
+2025-10-28T06:20:26    Number of deleted files: 0
+2025-10-28T06:20:26    Number of regular files transferred: 0
+2025-10-28T06:20:26    Total file size: 30.62K bytes
+2025-10-28T06:20:26    Total transferred file size: 0 bytes
+2025-10-28T06:20:26    Literal data: 0 bytes
+2025-10-28T06:20:26    Matched data: 0 bytes
+2025-10-28T06:20:26    File list size: 0
+2025-10-28T06:20:26    File list generation time: 0.001 seconds
+2025-10-28T06:20:26    File list transfer time: 0.000 seconds
+2025-10-28T06:20:26    Total bytes sent: 152
+2025-10-28T06:20:26    Total bytes received: 15
+2025-10-28T06:20:26    
+2025-10-28T06:20:26    sent 152 bytes  received 15 bytes  334.00 bytes/sec
+2025-10-28T06:20:26    total size is 30.62K  speedup is 183.35
+2025-10-28T06:20:26    
+2025-10-28T06:20:26    Number of files: 2 (reg: 2)
+2025-10-28T06:20:26    Number of created files: 0
+2025-10-28T06:20:26    Number of deleted files: 0
+2025-10-28T06:20:26    Number of regular files transferred: 0
+2025-10-28T06:20:26    Total file size: 2.21K bytes
+2025-10-28T06:20:26    Total transferred file size: 0 bytes
+2025-10-28T06:20:26    Literal data: 0 bytes
+2025-10-28T06:20:26    Matched data: 0 bytes
+2025-10-28T06:20:26    File list size: 0
+2025-10-28T06:20:26    File list generation time: 0.001 seconds
+2025-10-28T06:20:26    File list transfer time: 0.000 seconds
+2025-10-28T06:20:26    Total bytes sent: 139
+2025-10-28T06:20:26    Total bytes received: 22
+2025-10-28T06:20:26    
+2025-10-28T06:20:26    sent 139 bytes  received 22 bytes  322.00 bytes/sec
+2025-10-28T06:20:26    total size is 2.21K  speedup is 13.70
+2025-10-28T06:20:26    Attempt 1: Rsync for filelist /tmp//splits/split.ad completed with exit code 23
+2025-10-28T06:20:26    
+2025-10-28T06:20:26    Number of files: 2 (reg: 2)
+2025-10-28T06:20:26    Number of created files: 0
+2025-10-28T06:20:26    Number of deleted files: 0
+2025-10-28T06:20:26    Number of regular files transferred: 0
+2025-10-28T06:20:26    Total file size: 21.31K bytes
+2025-10-28T06:20:26    Total transferred file size: 0 bytes
+2025-10-28T06:20:26    Literal data: 0 bytes
+2025-10-28T06:20:26    Matched data: 0 bytes
+2025-10-28T06:20:26    File list size: 0
+2025-10-28T06:20:26    File list generation time: 0.001 seconds
+2025-10-28T06:20:26    File list transfer time: 0.000 seconds
+2025-10-28T06:20:26    Total bytes sent: 152
+2025-10-28T06:20:26    Total bytes received: 15
+2025-10-28T06:20:26    
+2025-10-28T06:20:26    sent 152 bytes  received 15 bytes  334.00 bytes/sec
+2025-10-28T06:20:26    total size is 21.31K  speedup is 127.60
+2025-10-28T06:20:26    Attempt 1: Rsync for filelist /tmp//splits/split.ac completed with exit code 23
+2025-10-28T06:20:26    Attempt 1: Rsync for filelist /tmp//splits/split.af completed with exit code 0
+2025-10-28T06:20:26    
+2025-10-28T06:20:26    Number of files: 2 (reg: 2)
+2025-10-28T06:20:26    Number of created files: 0
+2025-10-28T06:20:26    Number of deleted files: 0
+2025-10-28T06:20:26    Number of regular files transferred: 0
+2025-10-28T06:20:26    Total file size: 15.44K bytes
+2025-10-28T06:20:26    Total transferred file size: 0 bytes
+2025-10-28T06:20:26    Literal data: 0 bytes
+2025-10-28T06:20:26    Matched data: 0 bytes
+2025-10-28T06:20:26    File list size: 0
+2025-10-28T06:20:26    
+2025-10-28T06:20:26    Number of files: 2 (reg: 2)
+2025-10-28T06:20:26    Number of created files: 0
+2025-10-28T06:20:26    Number of deleted files: 0
+2025-10-28T06:20:26    Number of regular files transferred: 0
+2025-10-28T06:20:26    Total file size: 13.63K bytes
+2025-10-28T06:20:26    Total transferred file size: 0 bytes
+2025-10-28T06:20:26    Literal data: 0 bytes
+2025-10-28T06:20:26    Matched data: 0 bytes
+2025-10-28T06:20:26    File list size: 0
+2025-10-28T06:20:26    File list generation time: 0.058 seconds
+2025-10-28T06:20:26    File list transfer time: 0.000 seconds
+2025-10-28T06:20:27    Total bytes sent: 163
+2025-10-28T06:20:27    Total bytes received: 12
+2025-10-28T06:20:27    
+2025-10-28T06:20:27    sent 163 bytes  received 12 bytes  350.00 bytes/sec
+2025-10-28T06:20:27    total size is 13.63K  speedup is 77.89
+2025-10-28T06:20:27    Attempt 2: Rsync for filelist /tmp//splits/split.aa completed with exit code 23
+2025-10-28T06:20:27    File list generation time: 0.001 seconds
+2025-10-28T06:20:27    File list transfer time: 0.000 seconds
+2025-10-28T06:20:27    Total bytes sent: 146
+2025-10-28T06:20:27    Total bytes received: 15
+2025-10-28T06:20:27    
+2025-10-28T06:20:27    sent 146 bytes  received 15 bytes  322.00 bytes/sec
+2025-10-28T06:20:27    total size is 15.44K  speedup is 95.90
+2025-10-28T06:20:27    Attempt 2: Rsync for filelist /tmp//splits/split.ae completed with exit code 23
+2025-10-28T06:20:27    
+2025-10-28T06:20:27    Number of files: 2 (reg: 2)
+2025-10-28T06:20:27    Number of created files: 0
+2025-10-28T06:20:27    Number of deleted files: 0
+2025-10-28T06:20:27    Number of regular files transferred: 0
+2025-10-28T06:20:27    Total file size: 30.62K bytes
+2025-10-28T06:20:27    Total transferred file size: 0 bytes
+2025-10-28T06:20:27    Literal data: 0 bytes
+2025-10-28T06:20:27    Matched data: 0 bytes
+2025-10-28T06:20:27    File list size: 0
+2025-10-28T06:20:27    File list generation time: 0.001 seconds
+2025-10-28T06:20:27    File list transfer time: 0.000 seconds
+2025-10-28T06:20:27    Total bytes sent: 152
+2025-10-28T06:20:27    Total bytes received: 15
+2025-10-28T06:20:27    
+2025-10-28T06:20:27    sent 152 bytes  received 15 bytes  334.00 bytes/sec
+2025-10-28T06:20:27    total size is 30.62K  speedup is 183.35
+2025-10-28T06:20:27    Attempt 2: Rsync for filelist /tmp//splits/split.ad completed with exit code 23
+2025-10-28T06:20:27    
+2025-10-28T06:20:27    Number of files: 2 (reg: 2)
+2025-10-28T06:20:27    Number of created files: 0
+2025-10-28T06:20:27    Number of deleted files: 0
+2025-10-28T06:20:27    Number of regular files transferred: 0
+2025-10-28T06:20:27    Total file size: 21.31K bytes
+2025-10-28T06:20:27    Total transferred file size: 0 bytes
+2025-10-28T06:20:27    Literal data: 0 bytes
+2025-10-28T06:20:27    Matched data: 0 bytes
+2025-10-28T06:20:27    File list size: 0
+2025-10-28T06:20:27    File list generation time: 0.001 seconds
+2025-10-28T06:20:27    File list transfer time: 0.000 seconds
+2025-10-28T06:20:27    Total bytes sent: 152
+2025-10-28T06:20:27    Total bytes received: 15
+2025-10-28T06:20:27    
+2025-10-28T06:20:27    sent 152 bytes  received 15 bytes  334.00 bytes/sec
+2025-10-28T06:20:27    total size is 21.31K  speedup is 127.60
+2025-10-28T06:20:27    Attempt 2: Rsync for filelist /tmp//splits/split.ac completed with exit code 23
+2025-10-28T06:20:27    
+2025-10-28T06:20:27    Number of files: 2 (reg: 2)
+2025-10-28T06:20:27    Number of created files: 0
+2025-10-28T06:20:27    Number of deleted files: 0
+2025-10-28T06:20:27    Number of regular files transferred: 0
+2025-10-28T06:20:27    Total file size: 22.09K bytes
+2025-10-28T06:20:27    Total transferred file size: 0 bytes
+2025-10-28T06:20:27    Literal data: 0 bytes
+2025-10-28T06:20:27    Matched data: 0 bytes
+2025-10-28T06:20:27    File list size: 0
+2025-10-28T06:20:27    File list generation time: 0.001 seconds
+2025-10-28T06:20:27    File list transfer time: 0.000 seconds
+2025-10-28T06:20:27    Total bytes sent: 161
+2025-10-28T06:20:27    Total bytes received: 12
+2025-10-28T06:20:27    
+2025-10-28T06:20:27    sent 161 bytes  received 12 bytes  346.00 bytes/sec
+2025-10-28T06:20:27    total size is 22.09K  speedup is 127.67
+2025-10-28T06:20:27    Attempt 2: Rsync for filelist /tmp//splits/split.ab completed with exit code 23
+2025-10-28T06:20:27    An error has occurred during web site deployment.
+2025-10-28T06:20:27    Rsync failed in 1 seconds
+2025-10-28T06:20:27    rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\DataProcessor.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\rules.json": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessorV2.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\ConfigManager.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\SimpleDataProcessor.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\ZohoCRMClient.js": Invalid argument (22)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessor.js": Invalid argument (22)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\DataProcessor.js": Invalid argument (22)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\ConfigManager.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\SimpleDataProcessor.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\rules.json": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessorV2.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\ZohoCRMClient.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessor.js": Invalid argument (22)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+/opt/Kudu/Scripts/starter.sh /opt/Kudu/Scripts/parallel_rsync.sh /tmp/zipdeploy/extracted /home/site/wwwroot 8 /tmp/ False False  
+2025-10-28T06:20:27  
+2025-10-28T06:20:27  WARNING!! Exception in parallel rsync: ExitCode: 123  Output: Run rsync from: /tmp/zipdeploy/extracted/ to: /home/site/wwwroot/ in 8 parallel threads
+Delete options: clean=False  use manifest=False  directory to ignore=
+Prev manifest = /opt/Kudu/Scripts/firstDeploymentManifest and next /home/site/deployments/cf973c47-5100-44cc-9dff-859c3930ddb3/manifest
+Cleaning up /tmp//filelist.txt and /tmp//splits
+Creating a list of all files at /tmp//filelist.txt
+No directory to exclude.
+Created /tmp//filelist.txt. Total number of files to be synced = 12.
+Created batches from the list of files. Processing 2 files in each thread
+Running rsync for filelist /tmp//splits/split.aa from /tmp/zipdeploy/extracted/ to /home/site/wwwroot/
+Running rsync for filelist /tmp//splits/split.ab from /tmp/zipdeploy/extracted/ to /home/site/wwwroot/
+Running rsync for filelist /tmp//splits/split.ac from /tmp/zipdeploy/extracted/ to /home/site/wwwroot/
+Running rsync for filelist /tmp//splits/split.ad from /tmp/zipdeploy/extracted/ to /home/site/wwwroot/
+Running rsync for filelist /tmp//splits/split.ae from /tmp/zipdeploy/extracted/ to /home/site/wwwroot/
+Running rsync for filelist /tmp//splits/split.af from /tmp/zipdeploy/extracted/ to /home/site/wwwroot/
+
+Number of files: 2 (reg: 2)
+Number of created files: 0
+Number of deleted files: 0
+Number of regular files transferred: 0
+Total file size: 15.44K bytes
+Total transferred file size: 0 bytes
+Literal data: 0 bytes
+Matched data: 0 bytes
+File list size: 0
+File list generation time: 0.001 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 146
+Total bytes received: 15
+
+sent 146 bytes  received 15 bytes  322.00 bytes/sec
+total size is 15.44K  speedup is 95.90
+Attempt 1: Rsync for filelist /tmp//splits/split.ae completed with exit code 23
+
+Number of files: 2 (reg: 2)
+Number of created files: 0
+Number of deleted files: 0
+Number of regular files transferred: 0
+Total file size: 22.09K bytes
+Total transferred file size: 0 bytes
+Literal data: 0 bytes
+Matched data: 0 bytes
+File list size: 0
+File list generation time: 0.001 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 161
+Total bytes received: 12
+
+sent 161 bytes  received 12 bytes  346.00 bytes/sec
+total size is 22.09K  speedup is 127.67
+Attempt 1: Rsync for filelist /tmp//splits/split.ab completed with exit code 23
+
+Number of files: 2 (reg: 2)
+Number of created files: 0
+Number of deleted files: 0
+Number of regular files transferred: 0
+Total file size: 13.63K bytes
+Total transferred file size: 0 bytes
+Literal data: 0 bytes
+Matched data: 0 bytes
+File list size: 0
+File list generation time: 0.001 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 163
+Total bytes received: 12
+
+sent 163 bytes  received 12 bytes  350.00 bytes/sec
+total size is 13.63K  speedup is 77.89
+Attempt 1: Rsync for filelist /tmp//splits/split.aa completed with exit code 23
+
+Number of files: 2 (reg: 2)
+Number of created files: 0
+Number of deleted files: 0
+Number of regular files transferred: 0
+Total file size: 30.62K bytes
+Total transferred file size: 0 bytes
+Literal data: 0 bytes
+Matched data: 0 bytes
+File list size: 0
+File list generation time: 0.001 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 152
+Total bytes received: 15
+
+sent 152 bytes  received 15 bytes  334.00 bytes/sec
+total size is 30.62K  speedup is 183.35
+
+Number of files: 2 (reg: 2)
+Number of created files: 0
+Number of deleted files: 0
+Number of regular files transferred: 0
+Total file size: 2.21K bytes
+Total transferred file size: 0 bytes
+Literal data: 0 bytes
+Matched data: 0 bytes
+File list size: 0
+File list generation time: 0.001 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 139
+Total bytes received: 22
+
+sent 139 bytes  received 22 bytes  322.00 bytes/sec
+total size is 2.21K  speedup is 13.70
+Attempt 1: Rsync for filelist /tmp//splits/split.ad completed with exit code 23
+
+Number of files: 2 (reg: 2)
+Number of created files: 0
+Number of deleted files: 0
+Number of regular files transferred: 0
+Total file size: 21.31K bytes
+Total transferred file size: 0 bytes
+Literal data: 0 bytes
+Matched data: 0 bytes
+File list size: 0
+File list generation time: 0.001 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 152
+Total bytes received: 15
+
+sent 152 bytes  received 15 bytes  334.00 bytes/sec
+total size is 21.31K  speedup is 127.60
+Attempt 1: Rsync for filelist /tmp//splits/split.ac completed with exit code 23
+Attempt 1: Rsync for filelist /tmp//splits/split.af completed with exit code 0
+
+Number of files: 2 (reg: 2)
+Number of created files: 0
+Number of deleted files: 0
+Number of regular files transferred: 0
+Total file size: 15.44K bytes
+Total transferred file size: 0 bytes
+Literal data: 0 bytes
+Matched data: 0 bytes
+File list size: 0
+
+Number of files: 2 (reg: 2)
+Number of created files: 0
+Number of deleted files: 0
+Number of regular files transferred: 0
+Total file size: 13.63K bytes
+Total transferred file size: 0 bytes
+Literal data: 0 bytes
+Matched data: 0 bytes
+File list size: 0
+File list generation time: 0.058 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 163
+Total bytes received: 12
+
+sent 163 bytes  received 12 bytes  350.00 bytes/sec
+total size is 13.63K  speedup is 77.89
+Attempt 2: Rsync for filelist /tmp//splits/split.aa completed with exit code 23
+File list generation time: 0.001 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 146
+Total bytes received: 15
+
+sent 146 bytes  received 15 bytes  322.00 bytes/sec
+total size is 15.44K  speedup is 95.90
+Attempt 2: Rsync for filelist /tmp//splits/split.ae completed with exit code 23
+
+Number of files: 2 (reg: 2)
+Number of created files: 0
+Number of deleted files: 0
+Number of regular files transferred: 0
+Total file size: 30.62K bytes
+Total transferred file size: 0 bytes
+Literal data: 0 bytes
+Matched data: 0 bytes
+File list size: 0
+File list generation time: 0.001 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 152
+Total bytes received: 15
+
+sent 152 bytes  received 15 bytes  334.00 bytes/sec
+total size is 30.62K  speedup is 183.35
+Attempt 2: Rsync for filelist /tmp//splits/split.ad completed with exit code 23
+
+Number of files: 2 (reg: 2)
+Number of created files: 0
+Number of deleted files: 0
+Number of regular files transferred: 0
+Total file size: 21.31K bytes
+Total transferred file size: 0 bytes
+Literal data: 0 bytes
+Matched data: 0 bytes
+File list size: 0
+File list generation time: 0.001 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 152
+Total bytes received: 15
+
+sent 152 bytes  received 15 bytes  334.00 bytes/sec
+total size is 21.31K  speedup is 127.60
+Attempt 2: Rsync for filelist /tmp//splits/split.ac completed with exit code 23
+
+Number of files: 2 (reg: 2)
+Number of created files: 0
+Number of deleted files: 0
+Number of regular files transferred: 0
+Total file size: 22.09K bytes
+Total transferred file size: 0 bytes
+Literal data: 0 bytes
+Matched data: 0 bytes
+File list size: 0
+File list generation time: 0.001 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 161
+Total bytes received: 12
+
+sent 161 bytes  received 12 bytes  346.00 bytes/sec
+total size is 22.09K  speedup is 127.67
+Attempt 2: Rsync for filelist /tmp//splits/split.ab completed with exit code 23
+An error has occurred during web site deployment.
+Rsync failed in 1 seconds  Error: rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\DataProcessor.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\rules.json": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessorV2.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\ConfigManager.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\SimpleDataProcessor.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\ZohoCRMClient.js": Invalid argument (22)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessor.js": Invalid argument (22)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\DataProcessor.js": Invalid argument (22)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\ConfigManager.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\SimpleDataProcessor.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\rules.json": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessorV2.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\ZohoCRMClient.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessor.js": Invalid argument (22)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]  Kudu.Core.Infrastructure.CommandLineException: rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\DataProcessor.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\rules.json": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessorV2.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\ConfigManager.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\SimpleDataProcessor.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\ZohoCRMClient.js": Invalid argument (22)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessor.js": Invalid argument (22)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\DataProcessor.js": Invalid argument (22)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\ConfigManager.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\SimpleDataProcessor.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/config\rules.json": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessorV2.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\ZohoCRMClient.js": Invalid argument (22)
+rsync: [generator] recv_generator: failed to stat "/home/site/wwwroot/processors\EnhancedDataProcessor.js": Invalid argument (22)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+/opt/Kudu/Scripts/starter.sh /opt/Kudu/Scripts/parallel_rsync.sh /tmp/zipdeploy/extracted /home/site/wwwroot 8 /tmp/ False False  
+   at Kudu.Core.Infrastructure.Executable.ExecuteInternal(ITracer tracer  Func`2 onWriteOutput  Func`2 onWriteError  CancellationToken token  Encoding encoding  String arguments  Object[] args) in /tmp/KuduLite/Kudu.Core/Infrastructure/Executable.cs:line 239
+   at Kudu.Core.Infrastructure.Executable.ExecuteWithProgressWriter(ILogger logger  ITracer tracer  CancellationToken token  String arguments  Object[] args) in /tmp/KuduLite/Kudu.Core/Infrastructure/Executable.cs:line 118
+   at Kudu.Core.Deployment.Generator.ExternalCommandBuilder.RunCommand(DeploymentContext context  String command  Boolean ignoreManifest  CancellationToken token  String message) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/ExternalCommandBuilder.cs:line 122
+   at Kudu.Core.Deployment.Generator.OneDeployBuilder.Build(DeploymentContext context  CancellationToken token) in /tmp/KuduLite/Kudu.Core/Deployment/Generator/OneDeployBuilder.cs:line 97
+2025-10-28T06:20:27  Incrementally deploying to /home/site/wwwroot
+2025-10-28T06:20:28  Deployment Failed. deployer = OneDeploy deploymentPath = OneDeploy

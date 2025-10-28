@@ -207,21 +207,32 @@ class EnhancedDataProcessor {
       }
     });
 
-    // Ensure required fields
-    if (!zohoData.Last_Name && data.name) {
-      zohoData.Last_Name = data.name;
-    }
-
-    // Add pipeline information for deals
-    if (data.eventName && this.isDealEvent(data.eventName)) {
-      zohoData.Pipeline = "Sales Pipeline"; // Team Pipeline
-      zohoData.Stage = this.getDealStage(data.eventName, data);
-      
-      // Add deal name if not present
-      if (!zohoData.Deal_Name) {
-        zohoData.Deal_Name = this.generateDealName(data);
+    // Ensure required fields for Contact creation
+    if (!zohoData.Last_Name) {
+      // Try to construct name from available fields
+      if (data.name) {
+        zohoData.Last_Name = data.name;
+      } else if (data.customerName) {
+        zohoData.Last_Name = data.customerName;
+      } else if (data.firstName && data.lastName) {
+        zohoData.Last_Name = `${data.firstName} ${data.lastName}`;
+      } else if (data.firstName) {
+        zohoData.Last_Name = data.firstName;
+      } else if (data.lastName) {
+        zohoData.Last_Name = data.lastName;
+      } else {
+        zohoData.Last_Name = "Unknown Contact"; // Fallback
       }
     }
+
+    // Override Lead_Source to "Website" as requested
+    zohoData.Lead_Source = "Website";
+
+    // Remove deal-specific fields for contact creation
+    delete zohoData.Pipeline;
+    delete zohoData.Stage;
+    delete zohoData.Deal_Name;
+    delete zohoData.Priority;
 
     console.log('🔄 Mapped to Zoho format:', zohoData);
     return zohoData;

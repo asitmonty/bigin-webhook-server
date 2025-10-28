@@ -28,9 +28,38 @@ async function getAccessToken() {
   }
 }
 
-// ✅ Refresh token (Zoho .com region) - DEPRECATED, using Self-Client instead
+// ✅ Refresh token (Zoho .com region) - Server-Client mode
 async function refreshAccessToken() {
-  return getAccessToken(); // Redirect to Self-Client method
+  try {
+    console.log("🔁 Refreshing Zoho token...");
+    const url = "https://accounts.zoho.com/oauth/v2/token";
+    const params = new URLSearchParams({
+      refresh_token: process.env.ZOHO_REFRESH_TOKEN,
+      client_id: process.env.ZOHO_CLIENT_ID,
+      client_secret: process.env.ZOHO_CLIENT_SECRET,
+      grant_type: "refresh_token",
+    });
+
+    const res = await axios.post(url, params.toString(), {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    });
+
+    accessToken = res.data.access_token;
+    console.log("✅ Zoho access token refreshed successfully.");
+    return accessToken;
+  } catch (err) {
+    console.error("❌ Token refresh failed:", err.response?.data || err.message);
+    
+    // Handle rate limiting
+    if (err.response?.data?.error === 'Access Denied' && 
+        err.response?.data?.error_description?.includes('too many requests')) {
+      console.log("⏳ Rate limit hit, waiting 60 seconds...");
+      await new Promise(resolve => setTimeout(resolve, 60000));
+      return refreshAccessToken(); // Retry after waiting
+    }
+    
+    throw err;
+  }
 }
 
 // ✅ Send lead to Zoho Bigin (US region)
@@ -61,11 +90,20 @@ async function sendToZohoBigin(data) {
   } catch (err) {
     console.error("❌ Zoho Bigin API error:", err.response?.data || err.message);
 
-    if (err.response?.status === 401) {
-      console.log("🔁 Token expired — refreshing and retrying...");
-      await refreshAccessToken();
-      return sendToZohoBigin(data);
-    }
+        if (err.response?.status === 401) {
+          console.log("🔁 Token expired — refreshing and retrying...");
+          await refreshAccessToken();
+          return sendToZohoBigin(data);
+        }
+        
+        // Handle rate limiting
+        if (err.response?.status === 429 || 
+            (err.response?.data?.code === 'INVALID_TOKEN' && 
+             err.response?.data?.message?.includes('too many requests'))) {
+          console.log("⏳ Rate limit hit, waiting 60 seconds...");
+          await new Promise(resolve => setTimeout(resolve, 60000));
+          return sendToZohoBigin(data);
+        }
 
     return {
       success: false,

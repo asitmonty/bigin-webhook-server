@@ -5,7 +5,7 @@ async function testZohoToken() {
     console.log('Testing Zoho token refresh...');
     const url = "https://accounts.zoho.com/oauth/v2/token";
     const params = new URLSearchParams({
-      refresh_token: "1000.51692fc9c1a7cb6b102fb038f330b307.0d358a27f3cb28a486e52a0539c6e6e9",
+      refresh_token: "1000.3bcebafa95d70a482fdb1c3bea41f6f0.eb10578a5570bdcc8b8516bb270d74d5",
       client_id: "1000.YGDJ730H28KEGG5PU7O9NFKY5BQWTN",
       client_secret: "399a8ff39ae8ca478c91b8d71466aae422d60e1e72",
       grant_type: "refresh_token",

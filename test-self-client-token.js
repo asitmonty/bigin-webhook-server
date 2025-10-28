@@ -5,7 +5,7 @@ async function testSelfClientToken() {
     console.log('Testing Zoho Self-Client authentication...');
     const url = "https://accounts.zoho.com/oauth/v2/token";
     const params = new URLSearchParams({
-      code: "1000.d7eb1e47c544076cdfba71742da92b7c.bdeeff970cbf02ac3273db0a380574a5",
+      code: "1000.a3986e9f1bcbfeea19be1ca9610960f0.c24ccc5266584db97e54aaea99e238dd",
       client_id: "1000.8M3XLYNUNNOYDOW877VN684JN38XMS",
       client_secret: "ca6c3b8395c3c59f6e41f407fba2ffd89b6dbd6e21",
       grant_type: "authorization_code",

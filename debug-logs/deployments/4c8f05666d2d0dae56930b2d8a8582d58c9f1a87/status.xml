@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<deployment>
+  <id>4c8f05666d2d0dae56930b2d8a8582d58c9f1a87</id>
+  <author>asitmonty</author>
+  <deployer>GitHub</deployer>
+  <authorEmail>asit.mohanty@yavda.in</authorEmail>
+  <message>Complete Azure deployment setup for webhook server
+    
+    - Enhanced server.js with Azure-specific configurations
+    - Added comprehensive health checks (/health, /ready, /live)
+    - Integrated Application Insights monitoring
+    - Created GitHub Actions workflow for CI/CD
+    - Added PowerShell deployment script for Windows
+    - Enhanced bash deployment script with Application Insights
+    - Created Azure-specific environment configuration
+    - Updated package.json with Azure deployment scripts
+    - Comprehensive Azure deployment documentation
+    - Added monitoring, logging, and security configurations
+    - Production-ready Azure App Service setup</message>
+  <progress></progress>
+  <status>Success</status>
+  <statusText></statusText>
+  <lastSuccessEndTime>2025-10-28T06:53:15.1919039Z</lastSuccessEndTime>
+  <receivedTime>2025-10-28T06:50:14.2789565Z</receivedTime>
+  <startTime>2025-10-28T06:52:40.0266064Z</startTime>
+  <endTime>2025-10-28T06:53:15.1919039Z</endTime>
+  <complete>True</complete>
+  <is_temp>False</is_temp>
+  <is_readonly>False</is_readonly>
+  <buildSummary />
+</deployment>
