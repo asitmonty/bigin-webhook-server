@@ -2,9 +2,9 @@ const axios = require('axios');
 
 // Server-Client Token Exchange Script
 // ==================================
-// Use this script to exchange Server-Client authorization code for refresh token
+// Server-Client mode generates refresh token directly from URL
 
-async function exchangeServerClientCode() {
+async function exchangeServerClientToken() {
   console.log('🔄 Server-Client Token Exchange');
   console.log('==============================');
   
@@ -12,62 +12,64 @@ async function exchangeServerClientCode() {
   const clientId = '1000.YGDJ730H28KEGG5PU7O9NFKY5BQWTN';
   const clientSecret = '399a8ff39ae8ca478c91b8d71466aae422d60e1e72';
   
-  // You need to provide the authorization code from Zoho
-  const authCode = 'YOUR_AUTHORIZATION_CODE_HERE'; // Replace with actual code
-  
   console.log('📋 Server-Client Credentials:');
   console.log('Client ID:', clientId);
   console.log('Client Secret:', clientSecret);
-  console.log('Auth Code:', authCode);
   
-  if (authCode === 'YOUR_AUTHORIZATION_CODE_HERE') {
-    console.log('\n❌ Please provide a valid authorization code');
-    console.log('To get an authorization code:');
-    console.log('1. Go to https://api-console.zoho.com/');
-    console.log('2. Select your Server-Client app');
-    console.log('3. Generate authorization code');
-    console.log('4. Replace YOUR_AUTHORIZATION_CODE_HERE with the actual code');
-    return;
+  console.log('\n🌐 To get Server-Client refresh token:');
+  console.log('1. Go to https://api-console.zoho.com/');
+  console.log('2. Select your Server-Client app');
+  console.log('3. Click "Generate Refresh Token"');
+  console.log('4. Provide the redirect URL when prompted');
+  console.log('5. Copy the generated refresh token');
+  console.log('6. Update zoho-credentials.txt with the token');
+  
+  console.log('\n📝 Once you have the refresh token, update:');
+  console.log('zoho-credentials.txt: SERVER_CLIENT_REFRESH_TOKEN=your_token_here');
+  console.log('Then run: node switch-mode.js server');
+  
+  // Test the refresh token if provided
+  const testRefreshToken = process.argv[2];
+  if (testRefreshToken && testRefreshToken !== 'YOUR_REFRESH_TOKEN_HERE') {
+    console.log('\n🧪 Testing provided refresh token...');
+    await testRefreshTokenValidity(testRefreshToken, clientId, clientSecret);
   }
-  
+}
+
+async function testRefreshTokenValidity(refreshToken, clientId, clientSecret) {
   try {
-    console.log('\n🔄 Exchanging authorization code for tokens...');
+    console.log('🔑 Testing refresh token validity...');
     
     const url = "https://accounts.zoho.com/oauth/v2/token";
     const params = new URLSearchParams({
-      grant_type: "authorization_code",
+      refresh_token: refreshToken,
       client_id: clientId,
       client_secret: clientSecret,
-      redirect_uri: "https://your-redirect-uri.com", // Replace with your actual redirect URI
-      code: authCode
+      grant_type: "refresh_token",
     });
 
     const response = await axios.post(url, params.toString(), {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
 
-    console.log('✅ Token exchange successful!');
-    console.log('📥 Response:', JSON.stringify(response.data, null, 2));
-    
-    if (response.data.refresh_token) {
-      console.log('\n📝 Update your credentials file with:');
-      console.log(`SERVER_CLIENT_REFRESH_TOKEN=${response.data.refresh_token}`);
+    if (response.data.access_token) {
+      console.log('✅ Refresh token is valid!');
+      console.log('📥 Access token generated successfully');
+      console.log('🚀 Server-Client mode is ready to use');
       
-      console.log('\n📝 Update your .env file with:');
-      console.log(`ZOHO_CLIENT_ID=${clientId}`);
-      console.log(`ZOHO_CLIENT_SECRET=${clientSecret}`);
-      console.log(`ZOHO_REFRESH_TOKEN=${response.data.refresh_token}`);
+      console.log('\n📝 Update your credentials:');
+      console.log(`SERVER_CLIENT_REFRESH_TOKEN=${refreshToken}`);
     }
     
   } catch (error) {
-    console.error('❌ Token exchange failed:', error.response?.data || error.message);
+    console.error('❌ Refresh token test failed:', error.response?.data || error.message);
     
     if (error.response?.status === 400) {
       console.log('\n💡 Common issues:');
-      console.log('- Invalid authorization code');
-      console.log('- Wrong redirect URI');
-      console.log('- Expired authorization code');
-      console.log('- Incorrect client credentials');
+      console.log('- Invalid refresh token');
+      console.log('- Wrong client credentials');
+      console.log('- Expired refresh token');
+      console.log('- Incorrect redirect URI configuration');
     }
   }
 }
@@ -111,16 +113,14 @@ async function exchangeSelfClientCode() {
 // Main execution
 console.log('🔐 Zoho API Token Exchange Tool');
 console.log('==============================');
-console.log('1. Server-Client mode (recommended for production)');
-console.log('2. Self-Client mode (current working mode)');
+console.log('1. Server-Client mode (generates refresh token directly)');
+console.log('2. Self-Client mode (uses authorization code)');
 console.log('');
 
 // Uncomment the function you want to use:
-// exchangeServerClientCode();
+exchangeServerClientToken();
 // exchangeSelfClientCode();
 
-console.log('💡 To use this script:');
-console.log('1. Uncomment the function you want to use');
-console.log('2. Replace YOUR_AUTHORIZATION_CODE_HERE with actual code');
-console.log('3. Update redirect_uri if needed');
-console.log('4. Run: node token-exchange.js');
+console.log('\n💡 Usage:');
+console.log('  node token-exchange.js                    # Show instructions');
+console.log('  node token-exchange.js YOUR_REFRESH_TOKEN # Test refresh token');
