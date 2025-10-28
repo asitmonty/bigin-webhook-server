@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const { processAndRouteData } = require("./zoho");
-const SimpleDataProcessor = require("./processors/SimpleDataProcessor");
+const EnhancedDataProcessor = require("./processors/EnhancedDataProcessor");
 const ConfigManager = require("./config/ConfigManager");
 require("dotenv").config();
 
@@ -10,7 +10,7 @@ app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 
 const axios = require("axios");
-const dataProcessor = new SimpleDataProcessor();
+const dataProcessor = new EnhancedDataProcessor();
 const configManager = new ConfigManager();
 
 // Middleware for logging all requests
