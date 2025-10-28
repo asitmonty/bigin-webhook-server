@@ -2,6 +2,8 @@ const axios = require("axios");
 require("dotenv").config();
 
 let accessToken = null;
+let tokenExpiry = null;
+let lastTokenRequest = null;
 
 // Rate limiting configuration
 const RATE_LIMIT_CONFIG = {
@@ -71,6 +73,25 @@ async function getAccessToken() {
 
 // ✅ Refresh token (Zoho .com region) - Server-Client mode
 async function refreshAccessToken() {
+  // Check if current token is still valid (1 hour validity)
+  if (accessToken && tokenExpiry && new Date() < new Date(tokenExpiry)) {
+    console.log('♻️ Reusing existing valid token');
+    return accessToken;
+  }
+
+  // Check 10-minute rate limit (10 tokens per 10 minutes)
+  if (lastTokenRequest) {
+    const now = new Date();
+    const lastRequest = new Date(lastTokenRequest);
+    const diffMinutes = (now - lastRequest) / (1000 * 60);
+    
+    if (diffMinutes < 10) {
+      const waitTime = 10 - diffMinutes;
+      console.log(`⏳ Rate limit active. Wait ${Math.ceil(waitTime)} minutes before requesting new token.`);
+      throw new Error(`Rate limit active. Wait ${Math.ceil(waitTime)} minutes.`);
+    }
+  }
+
   try {
     console.log("🔁 Refreshing Zoho token...");
     const url = "https://accounts.zoho.com/oauth/v2/token";
@@ -81,22 +102,28 @@ async function refreshAccessToken() {
       grant_type: "refresh_token",
     });
 
+    lastTokenRequest = new Date();
+
     const res = await axios.post(url, params.toString(), {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
 
-    accessToken = res.data.access_token;
-    console.log("✅ Zoho access token refreshed successfully.");
-    return accessToken;
+    if (res.data.access_token) {
+      accessToken = res.data.access_token;
+      tokenExpiry = new Date(Date.now() + (res.data.expires_in * 1000));
+      
+      console.log("✅ Zoho access token refreshed successfully.");
+      console.log(`⏰ Token expires at: ${tokenExpiry.toLocaleTimeString()}`);
+      
+      return accessToken;
+    } else {
+      throw new Error("No access token received");
+    }
   } catch (err) {
     console.error("❌ Token refresh failed:", err.response?.data || err.message);
     
-    // Handle rate limiting
-    if (err.response?.data?.error === 'Access Denied' && 
-        err.response?.data?.error_description?.includes('too many requests')) {
-      console.log("⏳ Rate limit hit, waiting 60 seconds...");
-      await new Promise(resolve => setTimeout(resolve, 60000));
-      return refreshAccessToken(); // Retry after waiting
+    if (err.response?.data?.error === 'Access Denied') {
+      console.log('💡 Rate limit hit - wait 10 minutes before retrying');
     }
     
     throw err;
