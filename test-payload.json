@@ -1,0 +1,8 @@
+{
+  "test": "webhook",
+  "eventName": "test.event",
+  "customerName": "Test Customer",
+  "email": "test@example.com",
+  "company": "Test Company"
+}
+
