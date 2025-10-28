@@ -3,16 +3,16 @@ require("dotenv").config();
 
 let accessToken = null;
 
-// ✅ Refresh token (Zoho .com region)
-async function refreshAccessToken() {
+// ✅ Self-Client authentication (no refresh token needed)
+async function getAccessToken() {
   try {
-    console.log("🔁 Refreshing Zoho token...");
+    console.log("🔑 Getting Zoho access token via Self-Client...");
     const url = "https://accounts.zoho.com/oauth/v2/token";
     const params = new URLSearchParams({
-      refresh_token: process.env.ZOHO_REFRESH_TOKEN,
+      code: process.env.ZOHO_SELF_CLIENT_CODE,
       client_id: process.env.ZOHO_CLIENT_ID,
       client_secret: process.env.ZOHO_CLIENT_SECRET,
-      grant_type: "refresh_token",
+      grant_type: "authorization_code",
     });
 
     const res = await axios.post(url, params.toString(), {
@@ -20,12 +20,17 @@ async function refreshAccessToken() {
     });
 
     accessToken = res.data.access_token;
-    console.log("✅ Zoho access token refreshed successfully.");
+    console.log("✅ Zoho access token obtained successfully.");
     return accessToken;
   } catch (err) {
-    console.error("❌ Token refresh failed:", err.response?.data || err.message);
+    console.error("❌ Self-Client token failed:", err.response?.data || err.message);
     throw err;
   }
+}
+
+// ✅ Refresh token (Zoho .com region) - DEPRECATED, using Self-Client instead
+async function refreshAccessToken() {
+  return getAccessToken(); // Redirect to Self-Client method
 }
 
 // ✅ Send lead to Zoho Bigin (US region)
