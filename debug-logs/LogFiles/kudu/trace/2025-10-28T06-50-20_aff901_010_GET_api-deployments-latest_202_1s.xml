@@ -1,8 +1,0 @@
-<step title="Incoming Request" date="2025-10-28T06:50:20.652" instance="aff901" url="/api/deployments/latest?deployer=GitHub&amp;time=2025-10-28_06-49-48Z" method="GET" type="request" pid="820,1,20" Host="bigin-webhook-server.scm.azurewebsites.net" User-Agent="Azure-WebSites-Controller/105.0.7.86" Authorization="Bas..." x-ms-request-id="1069d0cb-17aa-4161-94b8-59595efe50b5" X-ARR-LOG-ID="1069d0cb-17aa-4161-94b8-59595efe50b5" CLIENT-IP="20.119.16.29:7041" X-SITE-DEPLOYMENT-ID="bigin-webhook-server" WAS-DEFAULT-HOSTNAME="bigin-webhook-server.scm.azurewebsites.net" X-MS-PLATFORM-INTERNAL="True" X-Forwarded-Proto="https" X-AppService-Proto="https" X-Forwarded-TlsVersion="1.3" X-WAWS-Unencoded-URL="/api/deployments/latest?deployer=GitHub&amp;time=2025-10-28_06-49-48Z" X-Client-IP="20.119.16.29" X-Client-Port="7041" >
-  <step title="DeploymentService.GetResult" date="2025-10-28T06:50:20.721" >
-    <step title="DeploymentService.GetLatestDeployment" date="2025-10-28T06:50:20.750" >
-      <step title="DeploymentManager.GetResults" date="2025-10-28T06:50:20.753" /><!-- duration: 456ms -->
-    </step><!-- duration: 467ms -->
-  </step><!-- duration: 508ms -->
-  <step title="Outgoing response" date="2025-10-28T06:50:21.249" type="response" statusCode="202" statusText="Accepted" /><!-- duration: 10ms -->
-</step><!-- duration: 617ms -->
