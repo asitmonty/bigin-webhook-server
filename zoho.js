@@ -172,7 +172,7 @@ async function sendCompanyToZohoBigin(data) {
     
     if (!accessToken) await refreshAccessToken();
 
-    const url = "https://www.zohoapis.com/bigin/v2/Companies";
+    const url = "https://www.zohoapis.com/bigin/v2/Accounts";
     const payload = { data: [data] };
 
     console.log("🏢 Sending company to Zoho Bigin:", JSON.stringify(payload, null, 2));
@@ -231,7 +231,7 @@ async function sendLeadToZohoBigin(data) {
     
     if (!accessToken) await refreshAccessToken();
 
-    const url = "https://www.zohoapis.com/bigin/v2/Leads";
+    const url = "https://www.zohoapis.com/bigin/v2/Contacts";
     const payload = { data: [data] };
 
     console.log("🎯 Sending lead to Zoho Bigin:", JSON.stringify(payload, null, 2));
@@ -280,6 +280,134 @@ async function sendLeadToZohoBigin(data) {
   }
 }
 
+// ✅ Send deal to Zoho Bigin (Pipelines endpoint)
+async function sendDealToZohoBigin(data) {
+  try {
+    // Check rate limit before making request
+    if (isRateLimited()) {
+      await waitForRateLimit();
+    }
+    
+    if (!accessToken) await refreshAccessToken();
+
+    const url = "https://www.zohoapis.com/bigin/v2/Pipelines";
+    
+    // Ensure proper Pipeline data format with mandatory fields
+    const dealData = {
+      Deal_Name: data.Deal_Name || data.deal_name || "New Deal",
+      Contact_Name: data.Contact_Name || data.contact_id, // Use Contact ID
+      Sub_Pipeline: data.Sub_Pipeline || "PVE License User Pipeline", // Default Sub-Pipeline
+      Stage: data.Stage || data.stage || "Enquiry", // Default stage
+      Closing_Date: data.Closing_Date || data.closing_date || getFutureDate(30) // Default: today + 30 days
+    };
+    
+    const payload = { data: [dealData] };
+
+    console.log("💰 Sending deal to Zoho Bigin:", JSON.stringify(payload, null, 2));
+
+    // Record this request for rate limiting
+    recordRequest();
+
+    const res = await axios.post(url, payload, {
+      headers: { 
+        Authorization: `Zoho-oauthtoken ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+    });
+
+    console.log("✅ Zoho Bigin Deal API response:");
+    console.dir(res.data, { depth: null });
+    
+    return {
+      success: true,
+      data: res.data,
+      message: "Deal successfully created in Zoho Bigin"
+    };
+  } catch (err) {
+    console.error("❌ Zoho Bigin Deal API error:", err.response?.data || err.message);
+
+    if (err.response?.status === 401) {
+      console.log("🔁 Token expired — refreshing and retrying...");
+      await refreshAccessToken();
+      return sendDealToZohoBigin(data);
+    }
+    
+    // Handle rate limiting with exponential backoff
+    if (err.response?.status === 429 || 
+        (err.response?.data?.code === 'INVALID_TOKEN' && 
+         err.response?.data?.message?.includes('too many requests'))) {
+      console.log("⏳ Rate limit hit, waiting 60 seconds...");
+      await new Promise(resolve => setTimeout(resolve, 60000));
+      return sendDealToZohoBigin(data);
+    }
+
+    return {
+      success: false,
+      error: err.response?.data || err.message,
+      message: "Failed to create deal in Zoho Bigin"
+    };
+  }
+}
+
+// ✅ Send product to Zoho Bigin
+async function sendProductToZohoBigin(data) {
+  try {
+    // Check rate limit before making request
+    if (isRateLimited()) {
+      await waitForRateLimit();
+    }
+    
+    if (!accessToken) await refreshAccessToken();
+
+    const url = "https://www.zohoapis.com/bigin/v2/Products";
+    const payload = { data: [data] };
+
+    console.log("📦 Sending product to Zoho Bigin:", JSON.stringify(payload, null, 2));
+
+    // Record this request for rate limiting
+    recordRequest();
+
+    const res = await axios.post(url, payload, {
+      headers: { 
+        Authorization: `Zoho-oauthtoken ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+    });
+
+    console.log("✅ Zoho Bigin Product API response:");
+    console.dir(res.data, { depth: null });
+    
+    return {
+      success: true,
+      data: res.data,
+      message: "Product successfully created in Zoho Bigin"
+    };
+  } catch (err) {
+    console.error("❌ Zoho Bigin Product API error:", err.response?.data || err.message);
+
+    if (err.response?.status === 401) {
+      console.log("🔁 Token expired — refreshing and retrying...");
+      await refreshAccessToken();
+      return sendProductToZohoBigin(data);
+    }
+    
+    // Handle rate limiting with exponential backoff
+    if (err.response?.status === 429 || 
+        (err.response?.data?.code === 'INVALID_TOKEN' && 
+         err.response?.data?.message?.includes('too many requests'))) {
+      console.log("⏳ Rate limit hit, waiting 60 seconds...");
+      await new Promise(resolve => setTimeout(resolve, 60000));
+      return sendProductToZohoBigin(data);
+    }
+
+    return {
+      success: false,
+      error: err.response?.data || err.message,
+      message: "Failed to create product in Zoho Bigin"
+    };
+  }
+}
+
 // ✅ Process and route data to Zoho Bigin
 async function processAndRouteData(processedData, options = {}) {
   const results = {
@@ -295,13 +423,13 @@ async function processAndRouteData(processedData, options = {}) {
   if (processedData.company) {
     try {
       console.log("🏢 Creating company...");
-      const companyData = mapToCompanyFormat(processedData);
-      results.zohoBigin.company = await sendCompanyToZohoBigin(companyData);
+      const accountData = mapToAccountFormat(processedData);
+      results.zohoBigin.account = await sendCompanyToZohoBigin(accountData);
     } catch (error) {
-      results.zohoBigin.company = {
+      results.zohoBigin.account = {
         success: false,
         error: error.message,
-        message: "Failed to create company"
+        message: "Failed to create account"
       };
     }
   }
@@ -338,9 +466,9 @@ async function processAndRouteData(processedData, options = {}) {
 }
 
 // ✅ Map data to Company format
-function mapToCompanyFormat(data) {
+function mapToAccountFormat(data) {
   return {
-    Company_Name: data.company || data.customerCompany || "Unknown Company",
+    Account_Name: data.company || data.customerCompany || "Unknown Company",
     Website: data.website || "",
     Industry: data.industry || "",
     Description: data.message || data.description || "",
@@ -395,13 +523,23 @@ function determineLeadStatus(eventName) {
   return "Not Contacted";
 }
 
+// ✅ Helper function to get future date
+function getFutureDate(days) {
+  const today = new Date();
+  const futureDate = new Date(today);
+  futureDate.setDate(today.getDate() + days);
+  return futureDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+}
+
 module.exports = { 
   sendToZohoBigin, 
   sendCompanyToZohoBigin,
   sendLeadToZohoBigin,
+  sendDealToZohoBigin,
+  sendProductToZohoBigin,
   processAndRouteData,
   refreshAccessToken,
-  mapToCompanyFormat,
+  mapToAccountFormat,
   mapToLeadFormat,
   mapToContactFormat,
   determineLeadStatus
