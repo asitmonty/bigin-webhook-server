@@ -6,6 +6,39 @@ class EnhancedDataProcessor {
   constructor() {
     this.configManager = new ConfigManager();
     this.accessToken = null;
+    this.lastRequestTime = 0;
+    
+    // Get rate limiting config from rules
+    const rules = this.configManager.getRules();
+    this.rateLimitConfig = rules.rateLimiting || {
+      maxRequestsPerMinute: 10,
+      minRequestInterval: 6000,
+      enableRateLimit: true,
+      retryOnRateLimit: true,
+      maxRetries: 3
+    };
+    
+    this.minRequestInterval = this.rateLimitConfig.minRequestInterval;
+  }
+
+  /**
+   * Add delay between requests to respect rate limits
+   */
+  async respectRateLimit() {
+    if (!this.rateLimitConfig.enableRateLimit) {
+      return; // Rate limiting disabled
+    }
+    
+    const now = Date.now();
+    const timeSinceLastRequest = now - this.lastRequestTime;
+    
+    if (timeSinceLastRequest < this.minRequestInterval) {
+      const waitTime = this.minRequestInterval - timeSinceLastRequest;
+      console.log(`⏳ Rate limiting: waiting ${Math.ceil(waitTime/1000)} seconds...`);
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+    }
+    
+    this.lastRequestTime = Date.now();
   }
 
   /**
@@ -43,6 +76,10 @@ class EnhancedDataProcessor {
 
       // Step 6: Send to Zoho Bigin API
       console.log('📤 Sending to Zoho Bigin API...');
+      
+      // Respect rate limits before making API call
+      await this.respectRateLimit();
+      
       const zohoFormattedData = this.mapToZohoBiginFormat(processedData);
       console.log('📤 Zoho formatted data:', zohoFormattedData);
       const zohoResult = await processAndRouteData(zohoFormattedData);
@@ -653,6 +690,9 @@ class EnhancedDataProcessor {
   /**
    * Map processed data to Zoho Bigin format
    */
+  /**
+   * Map processed data to generic Zoho format (used for all endpoints)
+   */
   mapToZohoBiginFormat(data) {
     const rules = this.configManager.getRules();
     const zohoData = {};
@@ -672,32 +712,17 @@ class EnhancedDataProcessor {
       }
     });
 
-    // Ensure required fields for Contact creation
-    if (!zohoData.Last_Name) {
-      // Try to construct name from available fields
-      if (data.name) {
-        zohoData.Last_Name = data.name;
-      } else if (data.customerName) {
-        zohoData.Last_Name = data.customerName;
-      } else if (data.firstName && data.lastName) {
-        zohoData.Last_Name = `${data.firstName} ${data.lastName}`;
-      } else if (data.firstName) {
-        zohoData.Last_Name = data.firstName;
-      } else if (data.lastName) {
-        zohoData.Last_Name = data.lastName;
-      } else {
-        zohoData.Last_Name = "Unknown Contact"; // Fallback
-      }
-    }
-
-    // Override Lead_Source to "Website" as requested
-    zohoData.Lead_Source = "Website";
-
-    // Remove deal-specific fields for contact creation
-    delete zohoData.Pipeline;
-    delete zohoData.Stage;
-    delete zohoData.Deal_Name;
-    delete zohoData.Priority;
+    // Add all relevant fields for multi-endpoint processing
+    zohoData.name = data.name || `${data.first_name || ''} ${data.last_name || ''}`.trim() || "Unknown";
+    zohoData.first_name = data.first_name || data.firstName || "";
+    zohoData.last_name = data.last_name || data.lastName || "";
+    zohoData.email = data.email || data.customerEmail || "";
+    zohoData.phone = data.phone || data.mobile || "";
+    zohoData.company = data.company || data.customerCompany || "";
+    zohoData.source = data.source || data.leadSource || "Website";
+    zohoData.message = data.message || data.description || "";
+    zohoData.website = data.website || "";
+    zohoData.event_name = data.event_name || "";
 
     console.log('🔄 Mapped to Zoho format:', zohoData);
     return zohoData;

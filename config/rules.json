@@ -90,6 +90,24 @@
     "Priority": "priority",
     "Website": "website"
   },
+  "companyFieldMappings": {
+    "Company_Name": "company",
+    "Website": "website",
+    "Industry": "industry",
+    "Description": "message",
+    "Lead_Source": "source"
+  },
+  "leadFieldMappings": {
+    "First_Name": "first_name",
+    "Last_Name": "last_name",
+    "Email": "email",
+    "Phone": "phone",
+    "Company": "company",
+    "Lead_Source": "source",
+    "Lead_Status": "lead_status",
+    "Description": "message",
+    "Website": "website"
+  },
   "defaultValues": {
     "Lead_Source": "Webhook",
     "Priority": "Medium",
@@ -175,5 +193,12 @@
     "retryDelay": 1000,
     "fallbackToDescription": true,
     "logErrors": true
+  },
+  "rateLimiting": {
+    "maxRequestsPerMinute": 10,
+    "minRequestInterval": 6000,
+    "enableRateLimit": true,
+    "retryOnRateLimit": true,
+    "maxRetries": 3
   }
 }
