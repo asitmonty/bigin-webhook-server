@@ -212,8 +212,74 @@ class EnhancedDataProcessor {
       zohoData.Last_Name = data.name;
     }
 
+    // Add pipeline information for deals
+    if (data.eventName && this.isDealEvent(data.eventName)) {
+      zohoData.Pipeline = "Sales Pipeline"; // Team Pipeline
+      zohoData.Stage = this.getDealStage(data.eventName, data);
+      
+      // Add deal name if not present
+      if (!zohoData.Deal_Name) {
+        zohoData.Deal_Name = this.generateDealName(data);
+      }
+    }
+
     console.log('🔄 Mapped to Zoho format:', zohoData);
     return zohoData;
+  }
+
+  /**
+   * Check if the event should create a deal
+   */
+  isDealEvent(eventName) {
+    const rules = this.configManager.getRules();
+    const dealEvents = [
+      ...rules.licenseEventRules.purchaseEvents,
+      ...rules.licenseEventRules.purchaseInitiateEvents,
+      ...rules.licenseEventRules.renewalEvents,
+      ...rules.licenseEventRules.renewalInitiateEvents
+    ];
+    return dealEvents.includes(eventName);
+  }
+
+  /**
+   * Get the appropriate deal stage based on event name
+   */
+  getDealStage(eventName, data) {
+    const rules = this.configManager.getRules();
+    
+    // Check purchase events
+    if (rules.licenseEventRules.purchaseEvents.includes(eventName)) {
+      return "Closed Won";
+    }
+    
+    // Check purchase initiate events
+    if (rules.licenseEventRules.purchaseInitiateEvents.includes(eventName)) {
+      return "Purchase Initiated";
+    }
+    
+    // Check renewal events
+    if (rules.licenseEventRules.renewalEvents.includes(eventName)) {
+      return "Renewal";
+    }
+    
+    // Check renewal initiate events
+    if (rules.licenseEventRules.renewalInitiateEvents.includes(eventName)) {
+      return "Renewal Initiated";
+    }
+    
+    // Default stage
+    return "Qualified";
+  }
+
+  /**
+   * Generate deal name based on data
+   */
+  generateDealName(data) {
+    const customerName = data.customerName || data.name || 'Unknown Customer';
+    const productName = data.productName || 'Product';
+    const eventName = data.eventName || 'Event';
+    
+    return `${customerName} - ${productName} - ${eventName}`;
   }
 
   /**
