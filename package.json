@@ -1,18 +1,15 @@
 {
   "name": "bigin-webhook-server",
   "version": "2.0.0",
-  "description": "Production-ready webhook server for Zoho Flow logic migration",
+  "description": "Standalone Webhook → Zoho Bigin integration (replaces Zoho Flow)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "test": "node test-webhook.js",
     "dev": "nodemon server.js",
-    "build": "echo 'No build step required'",
-    "deploy": "echo 'Deployment handled by GitHub Actions'"
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=8.0.0"
+    "azure:deploy": "az webapp deployment source config-zip --name bigin-webhook-server --resource-group bigin-webhook-rg --src deploy.zip",
+    "azure:logs": "az webapp log tail --name bigin-webhook-server --resource-group bigin-webhook-rg",
+    "azure:restart": "az webapp restart --name bigin-webhook-server --resource-group bigin-webhook-rg"
   },
   "dependencies": {
     "axios": "^1.6.0",
@@ -23,19 +20,15 @@
   "devDependencies": {
     "nodemon": "^3.0.0"
   },
-  "keywords": [
-    "webhook",
-    "zoho",
-    "crm",
-    "azure",
-    "nodejs",
-    "express"
-  ],
-  "author": "Asit Mohanty",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": ["webhook", "zoho", "bigin", "crm", "integration", "azure"],
+  "author": "Your Name",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/asitmonty/bigin-webhook-server.git"
-  },
-  "homepage": "https://github.com/asitmonty/bigin-webhook-server#readme"
+  }
 }

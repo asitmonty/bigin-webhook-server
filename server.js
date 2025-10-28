@@ -6,12 +6,39 @@ const ConfigManager = require("./config/ConfigManager");
 require("dotenv").config();
 
 const app = express();
+
+// Azure App Service configuration
+const PORT = process.env.PORT || 8080;
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const LOG_LEVEL = process.env.LOG_LEVEL || 'info';
+
+// Configure body parser with Azure-optimized limits
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+
+// Azure-specific middleware
+app.use((req, res, next) => {
+  // Add Azure-specific headers
+  res.set('X-Powered-By', 'Azure App Service');
+  res.set('X-Environment', NODE_ENV);
+  next();
+});
 
 const axios = require("axios");
 const dataProcessor = new EnhancedDataProcessor();
 const configManager = new ConfigManager();
+
+// Azure Application Insights integration (if available)
+let appInsights = null;
+try {
+  if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
+    appInsights = require('applicationinsights');
+    appInsights.setup().start();
+    console.log('📊 Application Insights enabled');
+  }
+} catch (error) {
+  console.log('📊 Application Insights not available:', error.message);
+}
 
 // Middleware for logging all requests
 app.use((req, res, next) => {
@@ -22,13 +49,83 @@ app.use((req, res, next) => {
   next();
 });
 
-// Health check endpoint
+// Enhanced health check endpoint for Azure
 app.get("/health", (req, res) => {
-  res.json({ 
-    status: "healthy", 
+  const healthCheck = {
+    status: "healthy",
     timestamp: new Date().toISOString(),
     version: "2.0.0",
-    service: "Zoho Bigin Webhook Processor"
+    service: "Zoho Bigin Webhook Processor",
+    environment: NODE_ENV,
+    port: PORT,
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    azure: {
+      appService: !!process.env.WEBSITE_SITE_NAME,
+      nodeVersion: process.version,
+      platform: process.platform
+    },
+    dependencies: {
+      zohoConfigured: !!(process.env.ZOHO_CLIENT_ID && process.env.ZOHO_CLIENT_SECRET),
+      appInsights: !!process.env.APPINSIGHTS_INSTRUMENTATIONKEY
+    }
+  };
+
+  // Log health check for monitoring
+  if (appInsights) {
+    appInsights.defaultClient.trackEvent({
+      name: 'HealthCheck',
+      properties: { environment: NODE_ENV, port: PORT }
+    });
+  }
+
+  res.json(healthCheck);
+});
+
+// Azure-specific readiness probe
+app.get("/ready", (req, res) => {
+  try {
+    // Check if all required services are available
+    const isReady = !!(
+      process.env.ZOHO_CLIENT_ID && 
+      process.env.ZOHO_CLIENT_SECRET && 
+      dataProcessor && 
+      configManager
+    );
+
+    if (isReady) {
+      res.status(200).json({ 
+        status: "ready", 
+        timestamp: new Date().toISOString() 
+      });
+    } else {
+      res.status(503).json({ 
+        status: "not ready", 
+        timestamp: new Date().toISOString(),
+        missing: {
+          zohoClientId: !process.env.ZOHO_CLIENT_ID,
+          zohoClientSecret: !process.env.ZOHO_CLIENT_SECRET,
+          dataProcessor: !dataProcessor,
+          configManager: !configManager
+        }
+      });
+    }
+  } catch (error) {
+    res.status(503).json({ 
+      status: "error", 
+      error: error.message,
+      timestamp: new Date().toISOString() 
+    });
+  }
+});
+
+// Azure-specific liveness probe
+app.get("/live", (req, res) => {
+  res.status(200).json({ 
+    status: "alive", 
+    timestamp: new Date().toISOString(),
+    pid: process.pid,
+    uptime: process.uptime()
   });
 });
 
@@ -214,17 +311,28 @@ app.use((error, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Standalone Zoho Bigin Webhook Server running on port ${PORT}`);
+  console.log(`🌍 Environment: ${NODE_ENV}`);
+  console.log(`📊 Log Level: ${LOG_LEVEL}`);
+  console.log(`☁️  Azure App Service: ${!!process.env.WEBSITE_SITE_NAME ? 'Yes' : 'No'}`);
   console.log(`📋 Available endpoints:`);
   console.log(`   POST /webhook - Main webhook endpoint (replaces Zoho Flow)`);
   console.log(`   POST /flow/webhook/incoming - Legacy endpoint for backward compatibility`);
   console.log(`   POST /test - Test endpoint`);
-  console.log(`   GET /health - Health check`);
+  console.log(`   GET /health - Health check (Azure monitoring)`);
+  console.log(`   GET /ready - Readiness probe (Azure)`);
+  console.log(`   GET /live - Liveness probe (Azure)`);
   console.log(`   GET /config - View configuration`);
   console.log(`   POST /config/reload - Reload configuration`);
   console.log(`   GET /oauth/callback - OAuth callback`);
-  console.log(`\n🔗 Your webhook URL: http://localhost:${PORT}/webhook`);
-  console.log(`🔗 Legacy Flow URL: http://localhost:${PORT}/flow/webhook/incoming`);
+  
+  if (NODE_ENV === 'development') {
+    console.log(`\n🔗 Your webhook URL: http://localhost:${PORT}/webhook`);
+    console.log(`🔗 Legacy Flow URL: http://localhost:${PORT}/flow/webhook/incoming`);
+  } else {
+    console.log(`\n🔗 Production webhook URL: https://bigin-webhook-server.azurewebsites.net/webhook`);
+    console.log(`🔗 Legacy Flow URL: https://bigin-webhook-server.azurewebsites.net/flow/webhook/incoming`);
+  }
 });

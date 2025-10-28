@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Azure Deployment Script for Bigin Webhook Server
 # This script helps set up Azure App Service for the webhook server
 
@@ -81,7 +79,18 @@ az webapp config appsettings set \
     --settings \
         NODE_ENV=production \
         PORT=8080 \
-        WEBSITE_NODE_DEFAULT_VERSION=18.17.0
+        WEBSITE_NODE_DEFAULT_VERSION=18.17.0 \
+        WEBSITE_RUN_FROM_PACKAGE=1 \
+        WEBSITE_ENABLE_SYNC_UPDATE_SITE=true \
+        WEBSITE_LOAD_CERTIFICATES="*" \
+        LOG_LEVEL=info \
+        WEBSITE_SKIP_CONTENTSHARE_VALIDATION=1 \
+        WEBSITE_DYNAMIC_CACHE=1 \
+        WEBSITE_LOCAL_CACHE_OPTION=Always \
+        WEBSITE_AUTH_ENABLED=false \
+        WEBSITE_AUTH_REQUIRE_HTTPS=true \
+        WEBSITE_HTTPLOGGING_RETENTION_DAYS=7 \
+        WEBSITE_LOG_STREAMING_ENABLED=1
 
 # Configure startup command
 print_status "Setting startup command..."
@@ -90,20 +99,42 @@ az webapp config set \
     --resource-group $RESOURCE_GROUP \
     --startup-file "npm start"
 
+# Enable Application Insights
+print_status "Enabling Application Insights..."
+az monitor app-insights component create \
+    --app $APP_NAME \
+    --location "$LOCATION" \
+    --resource-group $RESOURCE_GROUP \
+    --kind web
+
+# Get Application Insights key
+APP_INSIGHTS_KEY=$(az monitor app-insights component show \
+    --app $APP_NAME \
+    --resource-group $RESOURCE_GROUP \
+    --query instrumentationKey \
+    --output tsv)
+
+# Add Application Insights to app settings
+az webapp config appsettings set \
+    --name $APP_NAME \
+    --resource-group $RESOURCE_GROUP \
+    --settings \
+        APPINSIGHTS_INSTRUMENTATIONKEY=$APP_INSIGHTS_KEY
+
 print_success "Azure App Service created successfully!"
 print_status "App URL: https://$APP_NAME.azurewebsites.net"
 print_status "Health check: https://$APP_NAME.azurewebsites.net/health"
+print_status "Application Insights enabled"
 
 echo ""
 print_warning "Next steps:"
-echo "1. Set up your environment variables in Azure Portal:"
+echo "1. Set up your Zoho environment variables in Azure Portal:"
 echo "   - ZOHO_CLIENT_ID"
 echo "   - ZOHO_CLIENT_SECRET" 
 echo "   - ZOHO_REFRESH_TOKEN"
-echo "   - LOG_LEVEL"
 echo ""
 echo "2. Get the publish profile for GitHub Actions:"
-echo "   az webapp deployment list-publishing-profiles --name $APP_NAME --resource-group $RESOURCE_GROUP"
+echo "   az webapp deployment list-publishing-profiles --name $APP_NAME --resource-group $RESOURCE_GROUP --xml"
 echo ""
 echo "3. Add the publish profile as a secret in GitHub:"
 echo "   Repository Settings > Secrets > Actions > New repository secret"
@@ -113,6 +144,9 @@ echo ""
 echo "4. Push your code to trigger deployment:"
 echo "   git add ."
 echo "   git commit -m 'Add Azure deployment configuration'"
-echo "   git push origin main"
+echo "   git push origin azure-deployment"
+echo ""
+echo "5. Test your deployment:"
+echo "   curl https://$APP_NAME.azurewebsites.net/health"
 
 print_success "Azure setup completed! 🎉"
