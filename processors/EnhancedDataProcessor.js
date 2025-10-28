@@ -1,5 +1,6 @@
 const ConfigManager = require('../config/ConfigManager');
 const axios = require('axios');
+const { processAndRouteData } = require('../zoho');
 
 class EnhancedDataProcessor {
   constructor() {
@@ -40,13 +41,21 @@ class EnhancedDataProcessor {
       const dealResult = this.handleDealManagementSync(processedData, crmResult, licenseResult);
       console.log('💰 Deal management completed:', dealResult);
 
+      // Step 6: Send to Zoho Bigin API
+      console.log('📤 Sending to Zoho Bigin API...');
+      const zohoFormattedData = this.mapToZohoBiginFormat(processedData);
+      console.log('📤 Zoho formatted data:', zohoFormattedData);
+      const zohoResult = await processAndRouteData(zohoFormattedData);
+      console.log('📤 Zoho API result:', zohoResult);
+
       return {
         success: true,
         data: {
           ...processedData,
           crm: crmResult,
           license: licenseResult,
-          deal: dealResult
+          deal: dealResult,
+          zoho: zohoResult
         },
         originalPayload: payload
       };
@@ -174,6 +183,37 @@ class EnhancedDataProcessor {
       isValid: errors.length === 0,
       errors: errors
     };
+  }
+
+  /**
+   * Map processed data to Zoho Bigin format
+   */
+  mapToZohoBiginFormat(data) {
+    const rules = this.configManager.getRules();
+    const zohoData = {};
+
+    // Map fields according to Zoho Bigin field mappings
+    Object.keys(rules.zohoFieldMappings).forEach(zohoField => {
+      const sourceField = rules.zohoFieldMappings[zohoField];
+      if (data[sourceField]) {
+        zohoData[zohoField] = data[sourceField];
+      }
+    });
+
+    // Apply default values
+    Object.keys(rules.defaultValues).forEach(field => {
+      if (!zohoData[field]) {
+        zohoData[field] = rules.defaultValues[field];
+      }
+    });
+
+    // Ensure required fields
+    if (!zohoData.Last_Name && data.name) {
+      zohoData.Last_Name = data.name;
+    }
+
+    console.log('🔄 Mapped to Zoho format:', zohoData);
+    return zohoData;
   }
 
   /**
