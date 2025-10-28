@@ -311,7 +311,6 @@ app.use((error, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Standalone Zoho Bigin Webhook Server running on port ${PORT}`);
   console.log(`🌍 Environment: ${NODE_ENV}`);
