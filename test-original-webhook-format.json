@@ -1,0 +1,15 @@
+{
+  "UserDetails": {
+    "FirstName": "John",
+    "LastName": "Doe",
+    "Email": "john.doe@contoso.com",
+    "Phone": "16175555555",
+    "Country": "USA",
+    "Company": "Contoso",
+    "Title": "Esquire"
+  },
+  "LeadSource": "AzureMarketplace",
+  "ActionCode": "INS",
+  "OfferTitle": "Test Microsoft Pro",
+  "Description": "Test run through Power Automate"
+}
