@@ -1,300 +1,254 @@
-# Standalone Zoho Bigin Webhook Server
+# SaaS Template Framework
 
-A comprehensive webhook processing utility that replaces Zoho Flow and directly integrates with Zoho Bigin. This server accepts webhook data, processes it according to configurable rules, and writes records directly to Zoho Bigin.
+A comprehensive, reusable SaaS template framework with agent system for rapid deployment of multi-tenant SaaS applications.
+
+## 🚀 Features
+
+### Core SaaS Framework
+- **Multi-Tenant Architecture**: PostgreSQL-based tenant isolation
+- **Microservices**: Scalable service-oriented architecture
+- **Authentication**: Auth0/Azure AD B2C with SSO providers
+- **Payment Processing**: Stripe integration with subscription management
+- **Integration Framework**: Pluggable third-party service connections
+- **SaaS Agent**: Automated template deployment and configuration
+- **Azure-Ready**: Complete Azure deployment configuration
+- **Template System**: Easy customization for different SaaS applications
+
+### Digital Marketing Automation
+- **SEO-Optimized Website**: Google SEO best practices with technical and on-page optimization
+- **Analytics Setup**: Google Analytics 4 and Google Tag Manager integration
+- **Social Media Automation**: Facebook, Instagram, YouTube, LinkedIn, Twitter setup
+- **Google My Business**: Automated business listing and optimization
+- **Advertising Setup**: Google Ads and Meta Ads campaign creation via CLI
+- **Data Studio Reports**: Automated reporting dashboards with Google Data Studio
+- **Business Plan Generator**: Comprehensive business plan with market research and P&L
+- **Video Content Framework**: Starter video content with scripts and equipment recommendations
+- **Content Calendar**: Automated content planning and strategy
+- **Competitor Analysis**: Market positioning and competitive intelligence
+- **SEO Audit Tool**: Comprehensive technical and content SEO analysis
+
+## 📁 Project Structure
+
+```
+saas-template-framework/
+├── apps/                          # Frontend applications
+│   ├── marketing-website/         # Next.js marketing site
+│   ├── customer-portal/           # Next.js customer dashboard
+│   └── admin-portal/              # Next.js admin dashboard
+├── services/                      # Backend microservices
+│   ├── auth-service/              # Authentication microservice
+│   ├── customer-service/          # Customer management
+│   ├── payment-service/           # Stripe integration
+│   ├── subscription-service/      # Subscription management
+│   ├── reporting-service/         # Analytics & reporting
+│   ├── support-service/           # Customer support
+│   ├── integration-service/       # Third-party integrations
+│   └── webhook-service/           # Webhook processing
+├── shared/                        # Shared libraries and configurations
+│   ├── database/                  # PostgreSQL schemas & migrations
+│   ├── auth/                      # Auth0/Azure AD B2C config
+│   ├── integrations/              # Third-party service configs
+│   └── templates/                 # Application templates
+├── infrastructure/                # Deployment configurations
+│   ├── azure/                     # Terraform configurations
+│   ├── docker/                    # Docker configurations
+│   └── k8s/                       # Kubernetes manifests
+├── tools/                         # SaaS Agent and utilities
+│   ├── saas-agent.js              # Main SaaS Agent
+│   ├── template-generator.js      # Template generation
+│   └── deployment-helper.js       # Deployment utilities
+└── docs/                          # Documentation
+    ├── deployment-guide.md
+    ├── customization-guide.md
+    └── api-documentation.md
+```
+
+## 🛠️ Tech Stack
+
+- **Backend**: Node.js with Express.js/Fastify
+- **Frontend**: React with Next.js
+- **Database**: PostgreSQL with Redis caching
+- **Authentication**: Auth0 or Azure AD B2C
+- **Payment**: Stripe
+- **Cloud**: Azure (App Service, PostgreSQL, Redis, Functions)
+- **Containerization**: Docker with Kubernetes
+- **Infrastructure**: Terraform
 
 ## 🚀 Quick Start
 
-### 1. Install Dependencies
+### Prerequisites
+
+- Node.js 18+
+- Docker
+- Azure CLI
+- Terraform
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd saas-template-framework
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment**
+   ```bash
+   cp .env.template .env
+   # Edit .env with your configuration
+   ```
+
+4. **Start development environment**
+   ```bash
+   npm run dev
+   ```
+
+## 🤖 SaaS Agent Usage
+
+The SaaS Agent automates the creation and deployment of new SaaS applications using this template.
+
+### Create New SaaS Application
+
 ```bash
-npm install
+npm run agent:create
 ```
 
-### 2. Configure Environment
-Copy the environment template and fill in your Zoho credentials:
+This will:
+- Prompt for application details
+- Generate customized template
+- Set up Azure resources
+- Configure authentication
+- Deploy the application
+
+### Deploy Existing Application
+
 ```bash
-cp env.template .env
+npm run agent:deploy
 ```
 
-Edit `.env` with your Zoho OAuth credentials:
-```env
-ZOHO_CLIENT_ID=your_client_id_here
-ZOHO_CLIENT_SECRET=your_client_secret_here
-ZOHO_REFRESH_TOKEN=your_refresh_token_here
-PORT=3000
-```
+### Configure Application
 
-### 3. Set up Zoho OAuth
-1. Visit `http://localhost:3000/oauth/callback` to get your tokens
-2. Copy the refresh token to your `.env` file
-
-### 4. Start the Server
 ```bash
-npm start
+npm run agent:configure
 ```
 
-## 🔗 Webhook URLs
+## 📈 Digital Marketing Automation
 
-Your webhook server provides these endpoints:
+### Complete Marketing Setup
 
-- **Main Webhook**: `http://localhost:3000/webhook`
-- **Legacy Flow URL**: `http://localhost:3000/flow/webhook/incoming` (for backward compatibility)
-- **Test Endpoint**: `http://localhost:3000/test`
-
-## 📋 API Endpoints
-
-### Main Webhook Endpoint
-```
-POST /webhook
-```
-**Replaces your Zoho Flow webhook** - accepts webhook data and processes it through the complete pipeline.
-
-**Query Parameters:**
-- `sendToBigin=true/false` - Send to Zoho Bigin (default: true)
-
-**Example Request:**
-```json
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "phone": "1234567890",
-  "message": "Interested in your services",
-  "company": "Acme Corp",
-  "website": "acme.com"
-}
-```
-
-### Legacy Endpoint (Backward Compatibility)
-```
-POST /flow/webhook/incoming
-```
-Maintains compatibility with existing integrations that might still reference the old Zoho Flow URL.
-
-### Test Endpoint
-```
-POST /test
-```
-Test the data processing pipeline without sending to external services.
-
-### Health Check
-```
-GET /health
-```
-Returns server status and version information.
-
-### Configuration Management
-```
-GET /config - View current configuration rules
-POST /config/reload - Reload configuration from file
-```
-
-## ⚙️ Configuration
-
-The system uses `config/rules.json` for configuration. Key sections:
-
-### Field Mappings
-Define how webhook fields map to internal fields:
-```json
-{
-  "fieldMappings": {
-    "name": ["name", "Name", "full_name", "Full_Name", "customer_name"],
-    "email": ["email", "Email", "email_address", "Email_Address"],
-    "phone": ["phone", "Phone", "mobile", "Mobile"],
-    "website": ["website", "Website", "url", "URL"]
-  }
-}
-```
-
-### Validation Rules
-Set validation requirements:
-```json
-{
-  "validationRules": {
-    "email": {
-      "required": false,
-      "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
-    },
-    "name": {
-      "required": true,
-      "minLength": 2
-    }
-  }
-}
-```
-
-### Transformation Rules
-Define data transformations:
-```json
-{
-  "transformationRules": {
-    "phone": {
-      "removeSpaces": true,
-      "removeSpecialChars": true,
-      "addCountryCode": "+1"
-    },
-    "website": {
-      "toLowerCase": true,
-      "addProtocol": "https"
-    }
-  }
-}
-```
-
-### Zoho Field Mappings
-Map internal fields to Zoho Bigin fields:
-```json
-{
-  "zohoFieldMappings": {
-    "Last_Name": "name",
-    "Email": "email",
-    "Mobile": "phone",
-    "Description": "message",
-    "Company": "company",
-    "Website": "website"
-  }
-}
-```
-
-## 🔄 Migration from Zoho Flow
-
-### Step 1: Deploy Your Webhook Server
-1. Deploy this server to your preferred hosting platform (Heroku, AWS, DigitalOcean, etc.)
-2. Update your webhook URLs to point to your new server
-
-### Step 2: Update External Integrations
-Replace your Zoho Flow webhook URL:
-```
-OLD: https://flow.zoho.com/732778874/flow/webhook/incoming?zapikey=...
-NEW: https://your-domain.com/webhook
-```
-
-### Step 3: Test the Migration
-1. Use the `/test` endpoint to verify data processing
-2. Send test webhooks to ensure everything works
-3. Monitor logs for any issues
-
-## 🚀 Deployment Options
-
-### Heroku
 ```bash
-# Create Heroku app
-heroku create your-webhook-app
-
-# Set environment variables
-heroku config:set ZOHO_CLIENT_ID=your_client_id
-heroku config:set ZOHO_CLIENT_SECRET=your_client_secret
-heroku config:set ZOHO_REFRESH_TOKEN=your_refresh_token
-
-# Deploy
-git push heroku main
+npm run marketing:setup-all
 ```
 
-### Docker
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-EXPOSE 3000
-CMD ["npm", "start"]
-```
+This comprehensive command sets up:
+- Google Analytics & GTM
+- Social media accounts
+- Google My Business
+- Google Ads campaigns
+- Meta Ads campaigns
+- Data Studio reports
+- Business plan generation
+- Video content planning
 
-### PM2 (Production)
+### Individual Marketing Tools
+
+#### Analytics & Tracking
 ```bash
-npm install -g pm2
-pm2 start server.js --name "webhook-server"
-pm2 startup
-pm2 save
+npm run marketing:analytics    # Google Analytics & GTM setup
+npm run marketing:data-studio # Data Studio reports
 ```
 
-## 📊 Monitoring & Logging
+#### Social Media & Advertising
+```bash
+npm run marketing:social       # Social media accounts setup
+npm run marketing:gmb         # Google My Business setup
+npm run marketing:google-ads  # Google Ads campaigns
+npm run marketing:meta-ads    # Meta Ads campaigns
+```
 
-The server provides comprehensive logging:
-- Request/response logging
-- Data processing steps
-- Zoho API interactions
-- Error handling with detailed messages
+#### Content & Strategy
+```bash
+npm run marketing:seo-audit           # SEO audit tool
+npm run marketing:competitor-analysis # Competitor analysis
+npm run marketing:content-calendar   # Content calendar generator
+```
+
+#### Business Planning
+```bash
+npm run business-plan        # Complete business plan
+npm run market-research       # Market research report
+npm run financial-projections # P&L and financial projections
+```
+
+#### Video Content
+```bash
+npm run video-content  # Video content planning
+npm run video-scripts  # Video script generation
+npm run video-equipment # Equipment recommendations
+```
+
+## 📋 Available Templates
+
+### 1. Appsource Leads to CRM
+- Microsoft Appsource webhook integration
+- CRM provisioning (Zoho BigIn, Salesforce, etc.)
+- Lead enrichment from public sources
+- Microsoft Partner Center integration
+- Analytics and reporting
+
+### 2. Lead Marketplace
+- Data-as-a-Service model
+- Large dataset management
+- E-commerce for data products
+- Buyer/seller marketplace
+
+### 3. CRM Data Enrichment
+- API integrations (LinkedIn, web scraping)
+- Data enhancement services
+- CRM synchronization
+- Contact/company data augmentation
+
+### 4. Public Data Intelligence
+- Web scraping capabilities
+- Data aggregation from multiple sources
+- AI-powered insights
+- Government/public data processing
 
 ## 🔧 Customization
 
-### Adding New Field Types
-1. Update `config/rules.json` with new field mappings
-2. Add validation rules if needed
-3. Define transformation rules
-4. Map to Zoho fields
-5. Reload configuration via `/config/reload`
+Each SaaS application can be customized through:
 
-### Custom Validation Rules
-Add custom validation patterns:
-```json
-{
-  "validationRules": {
-    "custom_field": {
-      "required": true,
-      "pattern": "^[A-Z]{2}[0-9]{4}$",
-      "message": "Must be 2 letters followed by 4 numbers"
-    }
-  }
-}
-```
+1. **Template Configuration**: Modify templates in `shared/templates/`
+2. **Service Configuration**: Customize microservices
+3. **Integration Configuration**: Add/remove third-party integrations
+4. **UI Customization**: Modify frontend applications
+5. **Database Schema**: Extend PostgreSQL schemas
 
-## 🛠️ Development
+## 📚 Documentation
 
-### Project Structure
-```
-bigin-webhook-server/
-├── config/
-│   ├── ConfigManager.js    # Configuration management
-│   └── rules.json          # Processing rules
-├── processors/
-│   └── DataProcessor.js    # Data processing logic
-├── server.js               # Main server file
-├── zoho.js                # Zoho Bigin API integration
-├── package.json           # Dependencies
-└── env.template           # Environment template
-```
+- [Deployment Guide](docs/deployment-guide.md)
+- [Customization Guide](docs/customization-guide.md)
+- [API Documentation](docs/api-documentation.md)
 
-### Testing
-Use the `/test` endpoint to test data processing:
-```bash
-curl -X POST http://localhost:3000/test \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Test User","email":"test@example.com","website":"example.com"}'
-```
+## 🤝 Contributing
 
-## 🔐 Security
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
 
-- Environment variables for sensitive data
-- Input validation and sanitization
-- Error handling without exposing internal details
-- Optional webhook secret validation (can be added)
+## 📄 License
 
-## 📈 Performance
+MIT License - see [LICENSE](LICENSE) file for details.
 
-- Efficient data processing pipeline
-- Automatic token refresh for Zoho API
-- Comprehensive error handling
-- Request/response logging for monitoring
+## 🆘 Support
 
-## 🆘 Troubleshooting
-
-### Common Issues
-
-1. **OAuth Token Issues**
-   - Visit `/oauth/callback` to refresh tokens
-   - Check environment variables
-
-2. **Data Processing Errors**
-   - Check `/config` endpoint for current rules
-   - Use `/test` endpoint to debug processing
-
-3. **Zoho API Errors**
-   - Check logs for detailed error messages
-   - Verify API credentials and permissions
-
-### Support
-Check the logs for detailed error information. The server provides comprehensive logging for debugging.
-
-## License
-
-MIT License
+For support and questions:
+- Create an issue in the repository
+- Check the documentation
+- Contact the development team

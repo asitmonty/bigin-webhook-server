@@ -1,0 +1,65 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Explicitly declare text files
+*.js text
+*.jsx text
+*.ts text
+*.tsx text
+*.json text
+*.md text
+*.txt text
+*.yml text
+*.yaml text
+*.xml text
+*.html text
+*.css text
+*.scss text
+*.sass text
+*.less text
+*.sql text
+
+# Scripts
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Windows batch files
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.pdf binary
+*.zip binary
+*.tar binary
+*.gz binary
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.woff binary
+*.woff2 binary
+*.eot binary
+*.ttf binary
+*.otf binary
+*.mp4 binary
+*.mov binary
+*.avi binary
+*.mp3 binary
+*.wav binary
+
+# Terraform
+*.tfstate binary
+*.tfvars text
+
+# Lock files (generated, should not normalize)
+package-lock.json -diff
+yarn.lock -diff
+pnpm-lock.yaml -diff
+

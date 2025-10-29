@@ -129,10 +129,21 @@ class EnhancedDataProcessor {
    * Check if payload is in original format
    */
   isOriginalFormat(payload) {
-    return payload.UserDetails && 
+    console.log('🔍 Checking if original format:', {
+      hasUserDetails: !!payload.UserDetails,
+      hasLeadSource: !!payload.LeadSource,
+      hasActionCode: !!payload.ActionCode,
+      hasOfferTitle: !!payload.OfferTitle,
+      payloadKeys: Object.keys(payload)
+    });
+    
+    const isOriginal = payload.UserDetails && 
            payload.LeadSource && 
            payload.ActionCode && 
            payload.OfferTitle;
+           
+    console.log('🔍 Is original format?', isOriginal);
+    return isOriginal;
   }
 
   /**
