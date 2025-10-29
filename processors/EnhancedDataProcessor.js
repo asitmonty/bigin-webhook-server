@@ -137,7 +137,11 @@ class EnhancedDataProcessor {
       payloadKeys: Object.keys(payload)
     });
     
+    // Check for original format with UserDetails structure
     const isOriginal = payload.UserDetails && 
+           typeof payload.UserDetails === 'object' &&
+           payload.UserDetails.FirstName &&
+           payload.UserDetails.LastName &&
            payload.LeadSource && 
            payload.ActionCode && 
            payload.OfferTitle;
