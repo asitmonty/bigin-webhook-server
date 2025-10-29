@@ -121,6 +121,11 @@ class EnhancedDataProcessor {
       return this.extractFromOriginalFormat(payload);
     } else {
       console.log('📋 Detected derived webhook format');
+      // Check if this is actually the original format but wasn't detected
+      if (payload.UserDetails && payload.LeadSource && payload.ActionCode && payload.OfferTitle) {
+        console.log('📋 Re-detecting as original format based on payload structure');
+        return this.extractFromOriginalFormat(payload);
+      }
       return this.extractFromDerivedFormat(payload);
     }
   }
