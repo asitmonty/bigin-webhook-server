@@ -205,8 +205,33 @@ class EnhancedDataProcessor {
       }
     }
 
-    // Extract all mapped fields
+    // Check if this payload has UserDetails structure (even if not detected as original format)
+    if (dataSource.UserDetails && typeof dataSource.UserDetails === 'object') {
+      console.log('🔍 Found UserDetails in derived format, extracting...');
+      const user = dataSource.UserDetails;
+      extractedData.first_name = user.FirstName || user.first_name || user.firstName;
+      extractedData.last_name = user.LastName || user.last_name || user.lastName;
+      extractedData.email = user.Email || user.email;
+      extractedData.phone = user.Phone || user.phone;
+      extractedData.country = user.Country || user.country;
+      extractedData.company = user.Company || user.company;
+      extractedData.user_title = user.Title || user.title;
+      
+      // Create full name
+      if (extractedData.first_name && extractedData.last_name) {
+        extractedData.name = `${extractedData.first_name} ${extractedData.last_name}`;
+      } else if (user.FirstName && user.LastName) {
+        extractedData.name = `${user.FirstName} ${user.LastName}`;
+      }
+    }
+
+    // Extract all mapped fields from top level
     Object.keys(rules.fieldMappings).forEach(targetField => {
+      // Skip if we already extracted this field from UserDetails
+      if (extractedData[targetField]) {
+        return;
+      }
+      
       const possibleKeys = rules.fieldMappings[targetField];
       
       for (const key of possibleKeys) {
@@ -216,6 +241,20 @@ class EnhancedDataProcessor {
         }
       }
     });
+
+    // Also extract top-level fields that might exist
+    if (dataSource.LeadSource && !extractedData.source) {
+      extractedData.source = dataSource.LeadSource;
+    }
+    if (dataSource.ActionCode && !extractedData.action_code) {
+      extractedData.action_code = dataSource.ActionCode;
+    }
+    if (dataSource.OfferTitle && !extractedData.offer_title) {
+      extractedData.offer_title = dataSource.OfferTitle;
+    }
+    if (dataSource.Description && !extractedData.message) {
+      extractedData.message = dataSource.Description;
+    }
 
     return extractedData;
   }
