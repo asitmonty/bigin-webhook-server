@@ -335,4 +335,4 @@ app.listen(PORT, () => {
     console.log(`\n🔗 Production webhook URL: https://bigin-webhook-server.azurewebsites.net/webhook`);
     console.log(`🔗 Legacy Flow URL: https://bigin-webhook-server.azurewebsites.net/flow/webhook/incoming`);
   }
-});
+});// Deployment trigger
