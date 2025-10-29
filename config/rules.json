@@ -46,9 +46,9 @@
       "message": "Invalid phone number format"
     },
     "name": {
-      "required": true,
+      "required": false,
       "minLength": 2,
-      "message": "Name is required and must be at least 2 characters"
+      "message": "Name must be at least 2 characters if provided"
     },
     "website": {
       "required": false,

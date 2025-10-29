@@ -672,6 +672,14 @@ class EnhancedDataProcessor {
     const rules = this.configManager.getRules();
     const errors = [];
 
+    // Special case: if name is required but we have first_name and last_name, create name
+    if (rules.validationRules.name && rules.validationRules.name.required && !data.name) {
+      if (data.first_name && data.last_name) {
+        data.name = `${data.first_name} ${data.last_name}`;
+        console.log('🔧 Created name from first_name and last_name:', data.name);
+      }
+    }
+
     Object.keys(rules.validationRules).forEach(field => {
       const rule = rules.validationRules[field];
       const value = data[field];
