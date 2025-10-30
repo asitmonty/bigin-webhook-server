@@ -4,7 +4,7 @@ try {
 } catch (e) {
   // Will lazy-require inside functions; swallow here to avoid startup crash
 }
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID } = require('crypto');
 
 const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
 const DEADLETTER_CONTAINER = process.env.DEADLETTER_CONTAINER_NAME || 'bigin-deadletters';
@@ -31,7 +31,7 @@ async function getContainerClient() {
 
 async function writeDeadLetterBlob(payload, error, headers) {
   const dt = new Date().toISOString().replace(/[:.]/g, '-');
-  const name = `deadletter-${dt}-${uuidv4()}.json`;
+  const name = `deadletter-${dt}-${randomUUID()}.json`;
   const obj = { timestamp: new Date().toISOString(), payload, error, headers };
   try {
     const container = await getContainerClient();
@@ -89,7 +89,7 @@ async function getDeadLetterBlob(name) {
 async function writeEventBlob(eventType, data) {
   // Save event logs for analytics (success, retry, failure, etc.)
   const dt = new Date().toISOString().replace(/[:.]/g, '-');
-  const name = `analytic-${eventType}-${dt}-${uuidv4()}.json`;
+  const name = `analytic-${eventType}-${dt}-${randomUUID()}.json`;
   try {
     const container = await getContainerClient();
     const body = JSON.stringify(data, null, 2);
