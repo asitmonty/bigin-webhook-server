@@ -181,6 +181,23 @@ async function sendToZohoBigin(data) {
           return sendToZohoBigin(data);
         }
 
+        // Handle duplicate contact by upserting (find by email and update)
+        const duplicateCode = err.response?.data?.data?.[0]?.code;
+        const duplicateMsg = err.response?.data?.data?.[0]?.message;
+        if (duplicateCode === 'DUPLICATE_DATA' || (typeof duplicateMsg === 'string' && duplicateMsg.toLowerCase().includes('duplicate'))) {
+          try {
+            console.log('🔁 Duplicate contact detected. Looking up by email to upsert...');
+            const existingId = await findContactByEmail(data.Email);
+            if (existingId) {
+              await updateContact(existingId, data);
+              console.log(`✅ Upserted existing contact ${existingId}`);
+              return { success: true, data: { id: existingId }, message: 'Contact exists; updated' };
+            }
+          } catch (lookupErr) {
+            console.error('❌ Upsert failed:', lookupErr.response?.data || lookupErr.message);
+          }
+        }
+
     return {
       success: false,
       error: err.response?.data || err.message,
@@ -489,6 +506,25 @@ async function processAndRouteData(processedData, options = {}) {
     };
   }
 
+  // If contact exists (created or duplicate), proceed to deal creation
+  try {
+    const email = processedData.email || processedData.customerEmail;
+    if (email) {
+      const contactId = await findContactByEmail(email);
+      if (contactId) {
+        const dealPayload = {
+          Deal_Name: processedData.deal_name || processedData.Deal_Name || `${processedData.name || 'Deal'}-${processedData.company || ''}`.trim(),
+          Contact_Name: contactId,
+          Stage: processedData.stage || 'Enquiry',
+          Closing_Date: processedData.closing_date || getFutureDate(30)
+        };
+        await sendDealToZohoBigin(dealPayload);
+      }
+    }
+  } catch (dealErr) {
+    console.error('❌ Deal creation after contact upsert failed:', dealErr.response?.data || dealErr.message);
+  }
+
   return results;
 }
 
@@ -531,6 +567,37 @@ function mapToContactFormat(data) {
   };
 }
 
+// 🔎 Find contact by email
+async function findContactByEmail(email) {
+  if (!email) return null;
+  if (!accessToken) await refreshAccessToken();
+  const url = `https://www.zohoapis.com/bigin/v2/Contacts/search?email=${encodeURIComponent(email)}`;
+  const res = await axios.get(url, { headers: { Authorization: `Zoho-oauthtoken ${accessToken}` } });
+  const id = res.data?.data?.[0]?.id;
+  if (id) {
+    console.log(`🔎 Found contact by email ${email}: ${id}`);
+  } else {
+    console.log(`🔎 No contact found by email ${email}`);
+  }
+  return id || null;
+}
+
+// ✏️ Update contact by id
+async function updateContact(contactId, data) {
+  if (!contactId) return null;
+  if (!accessToken) await refreshAccessToken();
+  const url = `https://www.zohoapis.com/bigin/v2/Contacts/${contactId}`;
+  const payload = { data: [data] };
+  const res = await axios.put(url, payload, {
+    headers: { 
+      Authorization: `Zoho-oauthtoken ${accessToken}`,
+      "Content-Type": "application/json"
+    }
+  });
+  console.log('✏️ Contact updated:', res.data);
+  return res.data;
+}
+
 // ✅ Determine lead status based on event
 function determineLeadStatus(eventName) {
   if (!eventName) return "Not Contacted";
@@ -569,5 +636,7 @@ module.exports = {
   mapToAccountFormat,
   mapToLeadFormat,
   mapToContactFormat,
+  findContactByEmail,
+  updateContact,
   determineLeadStatus
 };
