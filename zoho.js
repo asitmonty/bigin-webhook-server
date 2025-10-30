@@ -198,75 +198,6 @@ async function sendLeadToZohoBigin(data) {
   }
 }
 
-// ✅ Send deal to Zoho Bigin (Pipelines endpoint)
-async function sendDealToZohoBigin(data) {
-  try {
-    // Check rate limit before making request
-    if (isRateLimited()) {
-      await waitForRateLimit();
-    }
-    
-    if (!accessToken) await refreshAccessToken();
-
-    const url = "https://www.zohoapis.com/bigin/v2/Pipelines";
-    
-    // Ensure proper Pipeline data format with mandatory fields
-    const dealData = {
-      Deal_Name: data.Deal_Name || data.deal_name || "New Deal",
-      Contact_Name: data.Contact_Name || data.contact_id, // Use Contact ID
-      Sub_Pipeline: data.Sub_Pipeline || "PVE License User Pipeline", // Default Sub-Pipeline
-      Stage: data.Stage || data.stage || "Enquiry", // Default stage
-      Closing_Date: data.Closing_Date || data.closing_date || getFutureDate(30) // Default: today + 30 days
-    };
-    
-    const payload = { data: [dealData] };
-
-    console.log("💰 Sending deal to Zoho Bigin:", JSON.stringify(payload, null, 2));
-
-    // Record this request for rate limiting
-    recordRequest();
-
-    const res = await axios.post(url, payload, {
-      headers: { 
-        Authorization: `Zoho-oauthtoken ${accessToken}`,
-        "Content-Type": "application/json"
-      },
-    });
-
-    console.log("✅ Zoho Bigin Deal API response:");
-    console.dir(res.data, { depth: null });
-    
-    return {
-      success: true,
-      data: res.data,
-      message: "Deal successfully created in Zoho Bigin"
-    };
-  } catch (err) {
-    console.error("❌ Zoho Bigin Deal API error:", err.response?.data || err.message);
-
-    if (err.response?.status === 401) {
-      console.log("🔁 Token expired — refreshing and retrying...");
-      await refreshAccessToken();
-      return sendDealToZohoBigin(data);
-    }
-    
-    // Handle rate limiting with exponential backoff
-    if (err.response?.status === 429 || 
-        (err.response?.data?.code === 'INVALID_TOKEN' && 
-         err.response?.data?.message?.includes('too many requests'))) {
-      console.log("⏳ Rate limit hit, waiting 60 seconds...");
-      await new Promise(resolve => setTimeout(resolve, 60000));
-      return sendDealToZohoBigin(data);
-    }
-
-    return {
-      success: false,
-      error: err.response?.data || err.message,
-      message: "Failed to create deal in Zoho Bigin"
-    };
-  }
-}
-
 // ✅ Send product to Zoho Bigin
 async function sendProductToZohoBigin(data) {
   try {
@@ -472,7 +403,6 @@ module.exports = {
   sendToZohoBigin, 
   sendCompanyToZohoBigin,
   sendLeadToZohoBigin,
-  sendDealToZohoBigin,
   sendProductToZohoBigin,
   processAndRouteData,
   refreshAccessToken,
