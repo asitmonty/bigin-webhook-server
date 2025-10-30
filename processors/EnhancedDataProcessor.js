@@ -701,6 +701,15 @@ class EnhancedDataProcessor {
       processedData[field] = transformedValue;
     });
 
+    // Fallback: if no event_name but ActionCode indicates insert, default to trial download
+    if (!processedData.event_name && (processedData.action_code || processedData.ActionCode)) {
+      const ac = (processedData.action_code || processedData.ActionCode || '').toString().toUpperCase();
+      if (ac === 'INS') {
+        processedData.event_name = 'appsource.license.downloadTrial';
+        console.log('🔧 Defaulted event_name based on ActionCode=INS:', processedData.event_name);
+      }
+    }
+
     return processedData;
   }
 
@@ -896,6 +905,15 @@ class EnhancedDataProcessor {
       source: null,
       dealName: null
     };
+
+    // Apply same fallback here if missing
+    if (!data.event_name && (data.action_code || data.ActionCode)) {
+      const ac = (data.action_code || data.ActionCode || '').toString().toUpperCase();
+      if (ac === 'INS') {
+        data.event_name = 'appsource.license.downloadTrial';
+        console.log('🔧 Defaulted event_name in license handler based on ActionCode=INS:', data.event_name);
+      }
+    }
 
     if (!data.event_name) {
       console.log('⚠️ No event_name provided, skipping license event handling');

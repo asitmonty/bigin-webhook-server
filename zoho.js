@@ -284,7 +284,7 @@ async function processAndRouteData(processedData, options = {}) {
   }
 
   // Create Lead (if lead data exists)
-  if (processedData.name || processedData.email) {
+  if (process.env.ZOHO_CRM_MODE !== 'bigin' && (processedData.name || processedData.email)) {
     try {
       console.log("🎯 Creating lead...");
       const leadData = mapToLeadFormat(processedData);
@@ -296,6 +296,8 @@ async function processAndRouteData(processedData, options = {}) {
         message: "Failed to create lead"
       };
     }
+  } else if (process.env.ZOHO_CRM_MODE === 'bigin') {
+    console.log('🔗 [Bigin mode]: Skipping lead creation in processAndRouteData');
   }
 
   // Create Contact (always create contact as fallback)
