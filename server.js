@@ -5,6 +5,22 @@ const { processAndRouteData } = require("./zoho");
 const EnhancedDataProcessor = require("./processors/EnhancedDataProcessor");
 const ConfigManager = require("./config/ConfigManager");
 require("dotenv").config();
+const fs = require('fs/promises');
+const path = require('path');
+const { writeDeadLetterBlob, listDeadLetterBlobs, getDeadLetterBlob, writeEventBlob } = require('./deadletter-blob');
+const { BlobServiceClient } = require('@azure/storage-blob');
+const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
+const DEADLETTER_CONTAINER = process.env.DEADLETTER_CONTAINER_NAME || 'bigin-deadletters';
+
+async function writeDeadLetter(payload, error, headers) {
+  const dir = path.join(__dirname, 'dead_letters');
+  const dt = new Date().toISOString().replace(/[:.]/g, '-');
+  const rand = Math.random().toString(36).slice(2, 8);
+  const fname = `${dt}-${rand}.json`;
+  const obj = { timestamp: new Date().toISOString(), payload, error, headers };
+  await fs.writeFile(path.join(dir, fname), JSON.stringify(obj, null, 2));
+  console.log('🩸 Dead-letter written:', fname);
+}
 
 const app = express();
 
@@ -241,14 +257,10 @@ app.post("/webhook", async (req, res) => {
     console.log("✅ Webhook processing completed:", JSON.stringify(response, null, 2));
     res.status(200).json(response);
 
-  } catch (error) {
-    console.error("❌ Error processing webhook:", error.message);
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: "Internal server error",
-      timestamp: new Date().toISOString()
-    });
+  } catch (err) {
+    await writeDeadLetterBlob(req.body, err.message, req.headers);
+    await writeEventBlob('fail', { error: err.message, body: req.body, headers: req.headers });
+    res.status(500).json({ success: false, error: 'Dead-lettered', message: err.message });
   }
 });
 
@@ -312,6 +324,148 @@ app.use((error, req, res, next) => {
   });
 });
 
+// Admin endpoint: List dead-letter files
+app.get('/deadletters', async (req, res) => {
+  try {
+    const files = await listDeadLetterBlobs();
+    res.json({ files });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+// Admin endpoint: Read a single dead-letter file
+app.get('/deadletters/:name', async (req, res) => {
+  try {
+    const obj = await getDeadLetterBlob(req.params.name);
+    res.json(obj);
+  } catch (e) {
+    res.status(404).json({ error: 'Not found' });
+  }
+});
+// Admin endpoint: Retry a dead-lettered payload by filename
+app.post('/deadletters/retry/:name', async (req, res) => {
+  try {
+    const name = req.params.name;
+    const obj = await getDeadLetterBlob(name);
+    // Simulate reprocessing: call main processing function as appropriate
+    try {
+      const EnhancedDataProcessor = require('./processors/EnhancedDataProcessor');
+      const processor = new EnhancedDataProcessor();
+      const result = await processor.processWebhookPayload(obj.payload);
+      if (result.success) {
+        // Delete blob after success
+        const client = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
+        const container = client.getContainerClient(DEADLETTER_CONTAINER);
+        await container.deleteBlob(name);
+        await writeEventBlob('retried-success', { name, obj, result });
+        return res.json({ success: true, processed: true, deleted: true, result });
+      } else {
+        await writeEventBlob('retried-fail', { name, obj, result });
+        return res.status(400).json({ success: false, error: 'Processing failed again', result });
+      }
+    } catch (err) {
+      await writeEventBlob('retried-fail', { name, obj, error: err.message });
+      return res.status(500).json({ success: false, error: err.message });
+    }
+  } catch (e) {
+    res.status(404).json({ error: 'Dead-letter file not found' });
+  }
+});
+// Admin endpoint: Delete a dead-letter by filename
+app.post('/deadletters/clear/:name', async (req, res) => {
+  try {
+    const name = req.params.name;
+    const client = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
+    const container = client.getContainerClient(DEADLETTER_CONTAINER);
+    await container.deleteBlob(name);
+    res.json({ success: true, deleted: name });
+  } catch (e) {
+    res.status(404).json({ error: 'Dead-letter file not found' });
+  }
+});
+
+app.get('/analytics/stats', async (req, res) => {
+  const { BlobServiceClient } = require('@azure/storage-blob');
+  const client = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
+  const container = client.getContainerClient(process.env.DEADLETTER_CONTAINER_NAME || 'bigin-deadletters');
+  let success = 0, fail = 0;
+  let scanned = 0;
+  for await (const blob of container.listBlobsFlat({ prefix: 'analytic-' })) {
+    if (blob.name.includes('retried-success')) success++;
+    if (blob.name.includes('fail')) fail++;
+    scanned++;
+    if (scanned > 1000) break;
+  }
+  res.json({ scanned, success, fail });
+});
+
+// Admin HTML UI
+app.get('/admin', async (req, res) => {
+  try {
+    const files = await listDeadLetterBlobs();
+    // compute quick stats via existing endpoint logic
+    const { BlobServiceClient } = require('@azure/storage-blob');
+    const client = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
+    const container = client.getContainerClient(process.env.DEADLETTER_CONTAINER_NAME || 'bigin-deadletters');
+    let success = 0, fail = 0; let scanned = 0;
+    for await (const blob of container.listBlobsFlat({ prefix: 'analytic-' })) {
+      if (blob.name.includes('retried-success') || blob.name.includes('success')) success++;
+      if (blob.name.includes('fail')) fail++;
+      scanned++; if (scanned > 1000) break;
+    }
+
+    const rows = files.map(name => `
+      <tr>
+        <td><code>${name}</code></td>
+        <td>
+          <form method="get" action="/deadletters/${encodeURIComponent(name)}" style="display:inline">
+            <button type="submit">View</button>
+          </form>
+          <form method="post" action="/deadletters/retry/${encodeURIComponent(name)}" style="display:inline;margin-left:8px">
+            <button type="submit">Retry</button>
+          </form>
+          <form method="post" action="/deadletters/clear/${encodeURIComponent(name)}" style="display:inline;margin-left:8px" onsubmit="return confirm('Delete this dead-letter?')">
+            <button type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    `).join('');
+
+    const html = `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Webhook Admin</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f7f7f7; text-align: left; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  </style>
+</head>
+<body>
+  <h1>Webhook Admin</h1>
+  <section>
+    <h2>Analytics</h2>
+    <p>Scanned: <b>${scanned}</b> &nbsp; Success: <b>${success}</b> &nbsp; Fail: <b>${fail}</b></p>
+  </section>
+  <section>
+    <h2>Dead Letters (${files.length})</h2>
+    <table>
+      <thead><tr><th>Blob</th><th>Actions</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="2">None</td></tr>'}</tbody>
+    </table>
+  </section>
+</body>
+</html>`;
+
+    res.type('html').send(html);
+  } catch (e) {
+    res.status(500).send('Admin UI error: ' + e.message);
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Standalone Zoho Bigin Webhook Server running on port ${PORT}`);
   console.log(`🌍 Environment: ${NODE_ENV}`);
@@ -327,6 +481,12 @@ app.listen(PORT, () => {
   console.log(`   GET /config - View configuration`);
   console.log(`   POST /config/reload - Reload configuration`);
   console.log(`   GET /oauth/callback - OAuth callback`);
+  console.log(`   GET /deadletters - List dead-letter files`);
+  console.log(`   GET /deadletters/:name - Read a single dead-letter file`);
+  console.log(`   POST /deadletters/retry/:name - Retry a dead-lettered payload`);
+  console.log(`   POST /deadletters/clear/:name - Delete a dead-letter by name`);
+  console.log(`   GET /analytics/stats - View analytics stats`);
+  console.log(`   GET /admin - Admin UI`);
   
   if (NODE_ENV === 'development') {
     console.log(`\n🔗 Your webhook URL: http://localhost:${PORT}/webhook`);
