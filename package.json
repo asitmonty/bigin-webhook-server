@@ -4,7 +4,7 @@
   "description": "Reusable SaaS Template Framework with Agent System",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "npm ci --omit=dev || npm install --omit=dev && node server.js",
     "dev": "concurrently \"npm run dev:services\" \"npm run dev:apps\"",
     "dev:services": "concurrently \"npm run dev:auth\" \"npm run dev:customer\" \"npm run dev:payment\" \"npm run dev:subscription\" \"npm run dev:reporting\" \"npm run dev:support\" \"npm run dev:integration\" \"npm run dev:webhook\"",
     "dev:apps": "concurrently \"npm run dev:marketing\" \"npm run dev:customer-portal\" \"npm run dev:admin-portal\"",
