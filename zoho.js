@@ -113,13 +113,13 @@ async function refreshAccessToken() {
     });
 
     if (res.data.access_token) {
-      accessToken = res.data.access_token;
+    accessToken = res.data.access_token;
       tokenExpiry = new Date(Date.now() + (res.data.expires_in * 1000));
       
-      console.log("✅ Zoho access token refreshed successfully.");
+    console.log("✅ Zoho access token refreshed successfully.");
       console.log(`⏰ Token expires at: ${tokenExpiry.toLocaleTimeString()}`);
       
-      return accessToken;
+    return accessToken;
     } else {
       throw new Error("No access token received");
     }
