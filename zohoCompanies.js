@@ -1,18 +1,21 @@
 const axios = require("axios");
-const { refreshAccessToken } = require('./zoho');
 
 let accessToken = null;
 
 async function sendCompanyToZohoBigin(data) {
   try {
-    // Check rate limit and token
-    if (!accessToken) await refreshAccessToken();
+    // Lazily require to avoid circular dependency at module load
+    const { refreshAccessToken } = require('./zoho');
+
+    // Always ensure we have a fresh token; use the returned token directly
+    const token = await refreshAccessToken();
+
     const url = "https://www.zohoapis.com/bigin/v2/Accounts";
     const payload = { data: [data] };
     console.log("🏢 Sending company to Zoho Bigin:", JSON.stringify(payload, null, 2));
     const res = await axios.post(url, payload, {
       headers: {
-        Authorization: `Zoho-oauthtoken ${accessToken}`,
+        Authorization: `Zoho-oauthtoken ${token}`,
         "Content-Type": "application/json"
       },
     });
@@ -28,6 +31,7 @@ async function sendCompanyToZohoBigin(data) {
     // Token refresh
     if (err.response?.status === 401) {
       console.log("🔁 Token expired — refreshing and retrying...");
+      const { refreshAccessToken } = require('./zoho');
       await refreshAccessToken();
       return sendCompanyToZohoBigin(data);
     }
