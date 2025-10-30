@@ -135,65 +135,6 @@ async function refreshAccessToken() {
 }
 
 
-// ✅ Send company to Zoho Bigin
-async function sendCompanyToZohoBigin(data) {
-  try {
-    // Check rate limit before making request
-    if (isRateLimited()) {
-      await waitForRateLimit();
-    }
-    
-    if (!accessToken) await refreshAccessToken();
-
-    const url = "https://www.zohoapis.com/bigin/v2/Accounts";
-    const payload = { data: [data] };
-
-    console.log("🏢 Sending company to Zoho Bigin:", JSON.stringify(payload, null, 2));
-
-    // Record this request for rate limiting
-    recordRequest();
-
-    const res = await axios.post(url, payload, {
-      headers: { 
-        Authorization: `Zoho-oauthtoken ${accessToken}`,
-        "Content-Type": "application/json"
-      },
-    });
-
-    console.log("✅ Zoho Bigin Company API response:");
-    console.dir(res.data, { depth: null });
-    
-    return {
-      success: true,
-      data: res.data,
-      message: "Company successfully created in Zoho Bigin"
-    };
-  } catch (err) {
-    console.error("❌ Zoho Bigin Company API error:", err.response?.data || err.message);
-
-    if (err.response?.status === 401) {
-      console.log("🔁 Token expired — refreshing and retrying...");
-      await refreshAccessToken();
-      return sendCompanyToZohoBigin(data);
-    }
-    
-    // Handle rate limiting with exponential backoff
-    if (err.response?.status === 429 || 
-        (err.response?.data?.code === 'INVALID_TOKEN' && 
-         err.response?.data?.message?.includes('too many requests'))) {
-      console.log("⏳ Rate limit hit, waiting 60 seconds...");
-      await new Promise(resolve => setTimeout(resolve, 60000));
-      return sendCompanyToZohoBigin(data);
-    }
-
-    return {
-      success: false,
-      error: err.response?.data || err.message,
-      message: "Failed to create company in Zoho Bigin"
-    };
-  }
-}
-
 // ✅ Send lead to Zoho Bigin
 async function sendLeadToZohoBigin(data) {
   if (process.env.ZOHO_CRM_MODE === 'bigin') {
