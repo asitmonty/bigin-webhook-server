@@ -41,6 +41,16 @@ app.use((req, res, next) => {
   next();
 });
 
+// Global security and caching headers
+app.use((req, res, next) => {
+  res.set('X-Content-Type-Options', 'nosniff');
+  // Strong no-cache for API responses
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
+
 const axios = require("axios");
 const dataProcessor = new EnhancedDataProcessor();
 const configManager = new ConfigManager();
