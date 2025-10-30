@@ -255,3 +255,4 @@ For support and questions:
 # Dummy commit to trigger redeployment
 
 # Trigger manual redeploy  
+# Azure redeploy ensure all files present
