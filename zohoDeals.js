@@ -6,7 +6,8 @@ async function sendDealToZohoBigin(data) {
     const { refreshAccessToken } = require('./zoho');
     const token = await refreshAccessToken();
 
-    const url = "https://www.zohoapis.com/bigin/v2/Pipelines";
+    // Correct Bigin endpoint for deals
+    const url = "https://www.zohoapis.com/bigin/v2/Deals";
 
     const dealData = {
       Deal_Name: data.Deal_Name || data.deal_name || "New Deal",
